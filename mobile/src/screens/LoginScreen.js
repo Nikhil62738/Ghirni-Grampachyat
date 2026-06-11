@@ -12,7 +12,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { COLORS } from "../config";
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const { login } = useAuth();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -74,8 +74,16 @@ export default function LoginScreen() {
             <Text style={styles.buttonText}>Login</Text>
           )}
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.outlineButton}
+          onPress={() => navigation.navigate("Activate")}
+          disabled={busy}
+        >
+          <Text style={styles.outlineButtonText}>Activate New Account</Text>
+        </TouchableOpacity>
         <Text style={styles.note}>
-          New here? Activate your account on the website first, then log in.
+          New taxpayer? Tap "Activate New Account" to verify your record and set
+          a password.
         </Text>
       </View>
 
@@ -131,6 +139,15 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   buttonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
+  outlineButton: {
+    borderWidth: 1,
+    borderColor: COLORS.gov,
+    borderRadius: 8,
+    padding: 13,
+    alignItems: "center",
+    marginTop: 12,
+  },
+  outlineButtonText: { color: COLORS.gov, fontWeight: "bold", fontSize: 15 },
   note: {
     fontSize: 12,
     color: COLORS.muted,

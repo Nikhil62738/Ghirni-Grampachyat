@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import { AuthProvider, useAuth } from "./src/context/AuthContext";
 import LoginScreen from "./src/screens/LoginScreen";
+import ActivateScreen from "./src/screens/ActivateScreen";
 import DashboardScreen from "./src/screens/DashboardScreen";
 import PayScreen from "./src/screens/PayScreen";
 import ReceiptsScreen from "./src/screens/ReceiptsScreen";
@@ -19,6 +20,11 @@ const headerTint = "#ffffff";
 const tabActive = COLORS.gov;
 
 const loginScreenOptions = { headerShown: false };
+const activateScreenOptions = {
+  title: "Activate Account",
+  headerStyle,
+  headerTintColor: headerTint,
+};
 const tabBarOptions = {
   headerStyle,
   headerTintColor: headerTint,
@@ -55,11 +61,18 @@ function Root() {
           options={loginScreenOptions}
         />
       ) : (
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={loginScreenOptions}
-        />
+        <>
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={loginScreenOptions}
+          />
+          <Stack.Screen
+            name="Activate"
+            component={ActivateScreen}
+            options={activateScreenOptions}
+          />
+        </>
       )}
     </Stack.Navigator>
   );

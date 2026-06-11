@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useI18n } from "../context/I18nContext.jsx";
 import { useTheme } from "../context/ThemeContext.jsx";
 
 export default function GovHeader({ right }) {
   const { t, lang, setLang } = useI18n();
   const { dark, toggle } = useTheme();
+  const [logoOk, setLogoOk] = useState(true);
 
   return (
     <header className="shadow-sm">
@@ -16,7 +18,9 @@ export default function GovHeader({ right }) {
               : "\u092E\u0939\u093E\u0930\u093E\u0937\u094D\u091F\u094D\u0930 \u0936\u093E\u0938\u0928 \u2022 \u0917\u094D\u0930\u093E\u092E\u0935\u093F\u0915\u093E\u0938 \u0935\u093F\u092D\u093E\u0917"}
           </span>
           <span className="hidden sm:inline">
-            {lang === "en" ? "Tq. Malkapur, Dist. Buldhana - 443102" : "\u0924\u093E. \u092E\u0932\u0915\u093E\u092A\u0942\u0930, \u091C\u093F. \u092C\u0941\u0932\u0922\u093E\u0923\u093E - 443102"}
+            {lang === "en"
+              ? "Tq. Malkapur, Dist. Buldhana - 443102"
+              : "\u0924\u093E. \u092E\u0932\u0915\u093E\u092A\u0942\u0930, \u091C\u093F. \u092C\u0941\u0932\u0922\u093E\u0923\u093E - 443102"}
           </span>
         </div>
       </div>
@@ -28,7 +32,16 @@ export default function GovHeader({ right }) {
       <div className="bg-gov text-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
-            <div className="gov-emblem">GP</div>
+            {logoOk ? (
+              <img
+                src="/logo.png"
+                alt="Gram Panchayat Ghirni"
+                className="gov-emblem object-contain"
+                onError={() => setLogoOk(false)}
+              />
+            ) : (
+              <div className="gov-emblem">GP</div>
+            )}
             <div>
               <div className="text-base font-bold leading-tight">
                 {t("appName")}

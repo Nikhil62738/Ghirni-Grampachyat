@@ -32,12 +32,28 @@ export function AuthProvider({ children }) {
     return u;
   };
 
+  // Activation: verify OTP + set password. The backend returns the same
+  // { token, user } payload as login, so we sign the user in immediately.
+  const activate = async (identifier, otp, password) => {
+    const res = await api.post("/auth/taxpayer/activate", {
+      identifier,
+      otp,
+      password,
+    });
+    const token = res.data.data.token;
+    const u = res.data.data.user;
+    await AsyncStorage.setItem("gp_token", token);
+    await AsyncStorage.setItem("gp_user", JSON.stringify(u));
+    setUser(u);
+    return u;
+  };
+
   const logout = async () => {
     await AsyncStorage.multiRemove(["gp_token", "gp_user"]);
     setUser(null);
   };
 
-  const ctxValue = { user, loading, login, logout };
+  const ctxValue = { user, loading, login, activate, logout };
 
   return (
     <AuthContext.Provider value={ctxValue}>{children}</AuthContext.Provider>

@@ -124,7 +124,19 @@ exports.requestOtp = asyncHandler(async (req, res) => {
 
   const gp = await Settings.getGlobal();
   const { subject, html } = otpEmail(tp, code, gp);
-  await sendMail({ to: tp.email, subject, html });
+  try {
+    await sendMail({ to: tp.email, subject, html });
+  } catch (mailErr) {
+    // Roll back the stored OTP so the user can retry cleanly.
+    await Otp.deleteMany({ taxpayer: tp._id, purpose: "activation" });
+    // eslint-disable-next-line no-console
+    console.error("OTP email failed:", mailErr && mailErr.message);
+    return fail(
+      res,
+      "Could not send the OTP email right now. Please try again in a moment or contact the Gram Panchayat Office.",
+      502
+    );
+  }
 
   return success(res, { sent: true }, "OTP sent to your registered email");
 });

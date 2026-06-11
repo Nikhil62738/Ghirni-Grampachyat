@@ -6,13 +6,13 @@
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "scheme": "gpghirni",
+    "icon": "./assets/logo.png",
     "splash": {
+      "image": "./assets/logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#1e3a8a"
+      "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "in.gov.ghirni.tax"
@@ -21,16 +21,16 @@
       "package": "in.gov.ghirni.tax",
       "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#1e3a8a"
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#ffffff"
       },
-      "permissions": [
-        "INTERNET"
-      ]
+      "permissions": ["INTERNET"]
+    },
+    "web": {
+      "favicon": "./assets/logo.png"
     },
     "extra": {
-      "eas": {
-        "projectId": "47c45650-7164-4230-8f6e-528c3f863536"
-      }
+      "eas": {}
     }
   }
 }

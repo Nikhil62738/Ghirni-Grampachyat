@@ -4,6 +4,7 @@ const app = require("./src/app");
 const connectDB = require("./src/config/db");
 const ensureSeedData = require("./src/utils/ensureSeedData");
 const { initCronJobs } = require("./src/jobs/cronJobs");
+const { getEmailMode } = require("./src/services/emailService");
 
 const PORT = process.env.PORT || 5000;
 
@@ -24,6 +25,8 @@ async function bootstrap() {
   server.listen(PORT, () => {
     // eslint-disable-next-line no-console
     console.log(`\u2705 GP Ghirni Tax API running on port ${PORT} [${process.env.NODE_ENV || "development"}]`);
+    // eslint-disable-next-line no-console
+    console.log(`\u2709\uFE0F  Email mode: ${getEmailMode()}`);
     initCronJobs();
   });
 
