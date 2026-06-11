@@ -161,4 +161,3 @@ SEED_ADMIN_PASSWORD=Admin@12345
 - Backup export
 
 See `DEPLOYMENT.md` for production deployment on a VPS / cloud server.
-"# Ghirni-Grampachyat" 

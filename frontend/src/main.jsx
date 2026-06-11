@@ -5,6 +5,7 @@ import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 import { I18nProvider } from "./context/I18nContext.jsx";
+import AppDownloadModal from "./components/AppDownloadModal.jsx";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -14,6 +15,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <I18nProvider>
           <AuthProvider>
             <App />
+            <AppDownloadModal />
           </AuthProvider>
         </I18nProvider>
       </ThemeProvider>

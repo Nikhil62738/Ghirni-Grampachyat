@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "GP Ghirni Tax",
+    "slug": "gp-ghirni-tax",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "gpghirni",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#1e3a8a"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "in.gov.ghirni.tax"
+    },
+    "android": {
+      "package": "in.gov.ghirni.tax",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#1e3a8a"
+      },
+      "permissions": ["INTERNET"]
+    },
+    "extra": {
+      "eas": {}
+    }
+  }
+}
