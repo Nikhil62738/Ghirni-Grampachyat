@@ -10,7 +10,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#1e3a8a"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "in.gov.ghirni.tax"
@@ -21,10 +23,14 @@
       "adaptiveIcon": {
         "backgroundColor": "#1e3a8a"
       },
-      "permissions": ["INTERNET"]
+      "permissions": [
+        "INTERNET"
+      ]
     },
     "extra": {
-      "eas": {}
+      "eas": {
+        "projectId": "47c45650-7164-4230-8f6e-528c3f863536"
+      }
     }
   }
 }
