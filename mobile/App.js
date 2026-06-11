@@ -1,126 +1,203 @@
-import "react-native-gesture-handler";
-import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { useMemo } from "react";
 import { StatusBar } from "expo-status-bar";
+import { ActivityIndicator, View, StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { NavigationContainer } from "@react-navigation/native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import {
+  NavigationContainer,
+  DefaultTheme,
+  DarkTheme,
+} from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
 
-import { AuthProvider, useAuth } from "./src/context/AuthContext";
+import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
 import { I18nProvider, useI18n } from "./src/context/I18nContext";
+import { AuthProvider, useAuth } from "./src/context/AuthContext";
 import { DashboardProvider } from "./src/context/DashboardContext";
-import { COLORS } from "./src/config";
 
 import LoginScreen from "./src/screens/LoginScreen";
 import ActivateScreen from "./src/screens/ActivateScreen";
 import HomeScreen from "./src/screens/HomeScreen";
-import TaxSummaryScreen from "./src/screens/TaxSummaryScreen";
-import TaxHistoryScreen from "./src/screens/TaxHistoryScreen";
-import PaymentHistoryScreen from "./src/screens/PaymentHistoryScreen";
 import PayScreen from "./src/screens/PayScreen";
-import CustomDrawer from "./src/components/CustomDrawer";
+import HistoryScreen from "./src/screens/HistoryScreen";
+import ProfileScreen from "./src/screens/ProfileScreen";
+import TaxSummaryScreen from "./src/screens/TaxSummaryScreen";
+import ReceiptScreen from "./src/screens/ReceiptScreen";
 
 const Stack = createNativeStackNavigator();
-const Drawer = createDrawerNavigator();
+const AuthStack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
-const headerStyle = { backgroundColor: COLORS.gov };
-const headerTint = "#ffffff";
-const hiddenHeader = { headerShown: false };
-
-const drawerScreenOptions = {
-  headerStyle: headerStyle,
-  headerTintColor: headerTint,
-  drawerActiveTintColor: COLORS.gov,
-  drawerActiveBackgroundColor: "#eef2ff",
-  drawerInactiveTintColor: COLORS.text,
+const TAB_ICONS = {
+  Home: { active: "home", inactive: "home-outline" },
+  PayTax: { active: "card", inactive: "card-outline" },
+  History: { active: "document-text", inactive: "document-text-outline" },
+  Profile: { active: "person", inactive: "person-outline" },
 };
 
-function AuthStack() {
-  return (
-    <Stack.Navigator screenOptions={hiddenHeader}>
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Activate" component={ActivateScreen} />
-    </Stack.Navigator>
-  );
+function renderTabIcon(routeName, focused, color, size) {
+  const set = TAB_ICONS[routeName] || TAB_ICONS.Home;
+  const iconName = focused ? set.active : set.inactive;
+  return <Ionicons name={iconName} size={size} color={color} />;
 }
 
-function renderDrawer(props) {
-  return <CustomDrawer {...props} />;
-}
-
-function AppDrawer() {
+function MainTabs() {
+  const { colors } = useTheme();
   const { t } = useI18n();
 
-  const homeOptions = { title: t("home"), headerTitle: t("appName") };
-  const taxSummaryOptions = { title: t("taxSummary") };
-  const taxHistoryOptions = { title: t("taxHistory") };
-  const paymentHistoryOptions = { title: t("paymentHistory") };
+  const screenOptions = ({ route }) => {
+    const tabBarIcon = ({ focused, color, size }) =>
+      renderTabIcon(route.name, focused, color, size);
+    const tabBarStyle = {
+      backgroundColor: colors.card,
+      borderTopColor: colors.border,
+      height: 62,
+      paddingBottom: 8,
+      paddingTop: 6,
+    };
+    return {
+      headerShown: false,
+      tabBarIcon,
+      tabBarActiveTintColor: colors.primary,
+      tabBarInactiveTintColor: colors.muted,
+      tabBarStyle,
+      tabBarLabelStyle: { fontSize: 11, fontWeight: "600" },
+    };
+  };
+
+  const homeOptions = { title: t("home") };
   const payOptions = { title: t("payTax") };
+  const historyOptions = { title: t("history") };
+  const profileOptions = { title: t("profile") };
 
   return (
-    <Drawer.Navigator
-      drawerContent={renderDrawer}
-      screenOptions={drawerScreenOptions}
-    >
-      <Drawer.Screen name="Home" component={HomeScreen} options={homeOptions} />
-      <Drawer.Screen
-        name="TaxSummary"
-        component={TaxSummaryScreen}
-        options={taxSummaryOptions}
+    <Tab.Navigator screenOptions={screenOptions}>
+      <Tab.Screen name="Home" component={HomeScreen} options={homeOptions} />
+      <Tab.Screen name="PayTax" component={PayScreen} options={payOptions} />
+      <Tab.Screen
+        name="History"
+        component={HistoryScreen}
+        options={historyOptions}
       />
-      <Drawer.Screen
-        name="TaxHistory"
-        component={TaxHistoryScreen}
-        options={taxHistoryOptions}
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={profileOptions}
       />
-      <Drawer.Screen
-        name="PaymentHistory"
-        component={PaymentHistoryScreen}
-        options={paymentHistoryOptions}
-      />
-      <Drawer.Screen name="PayTax" component={PayScreen} options={payOptions} />
-    </Drawer.Navigator>
+    </Tab.Navigator>
   );
 }
 
-function Root() {
+function AppNavigator() {
   const { user, loading } = useAuth();
+  const { colors, dark } = useTheme();
+  const { t } = useI18n();
+  const s = useMemo(() => make(colors), [colors]);
+
+  const navTheme = useMemo(() => {
+    const base = dark ? DarkTheme : DefaultTheme;
+    return {
+      ...base,
+      colors: {
+        ...base.colors,
+        primary: colors.primary,
+        background: colors.bg,
+        card: colors.card,
+        text: colors.text,
+        border: colors.border,
+      },
+    };
+  }, [dark, colors]);
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={COLORS.gov} />
+      <View style={s.center}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
-  if (!user) {
-    return <AuthStack />;
-  }
+  const headerStyle = { backgroundColor: colors.primary };
+  const taxSummaryOptions = {
+    headerShown: true,
+    title: t("taxSummary"),
+    headerStyle,
+    headerTintColor: "#fff",
+  };
+  const receiptOptions = {
+    headerShown: true,
+    title: t("receipts"),
+    headerStyle,
+    headerTintColor: "#fff",
+  };
+  const tabsOptions = { headerShown: false };
 
   return (
+    <NavigationContainer theme={navTheme}>
+      {user ? (
+        <Stack.Navigator>
+          <Stack.Screen
+            name="MainTabs"
+            component={MainTabs}
+            options={tabsOptions}
+          />
+          <Stack.Screen
+            name="TaxSummary"
+            component={TaxSummaryScreen}
+            options={taxSummaryOptions}
+          />
+          <Stack.Screen
+            name="Receipt"
+            component={ReceiptScreen}
+            options={receiptOptions}
+          />
+        </Stack.Navigator>
+      ) : (
+        <AuthStack.Navigator screenOptions={tabsOptions}>
+          <AuthStack.Screen name="Login" component={LoginScreen} />
+          <AuthStack.Screen name="Activate" component={ActivateScreen} />
+        </AuthStack.Navigator>
+      )}
+      <StatusBar style={dark ? "light" : "dark"} />
+    </NavigationContainer>
+  );
+}
+
+function ThemedApp() {
+  return (
     <DashboardProvider>
-      <AppDrawer />
+      <AppNavigator />
     </DashboardProvider>
   );
 }
 
 export default function App() {
   return (
-    <GestureHandlerRootView style={styles.flex}>
-      <I18nProvider>
-        <AuthProvider>
-          <NavigationContainer>
-            <StatusBar style="light" />
-            <Root />
-          </NavigationContainer>
-        </AuthProvider>
-      </I18nProvider>
+    <GestureHandlerRootView style={styles.root}>
+      <SafeAreaProvider>
+        <ThemeProvider>
+          <I18nProvider>
+            <AuthProvider>
+              <ThemedApp />
+            </AuthProvider>
+          </I18nProvider>
+        </ThemeProvider>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }
 
-const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  center: { flex: 1, alignItems: "center", justifyContent: "center" },
-});
+const styles = StyleSheet.create({ root: { flex: 1 } });
+
+function make(c) {
+  return StyleSheet.create({
+    center: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: c.bg,
+    },
+  });
+}

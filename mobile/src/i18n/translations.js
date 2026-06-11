@@ -1,343 +1,376 @@
-// English + Marathi dictionary for the whole mobile app.
+// Full EN/MR dictionary for the whole app.
 export const translations = {
   en: {
+    // App / header
     appName: "Gram Panchayat Ghirni",
     govLine: "Government of Maharashtra",
     citizenServices: "Citizen Tax Services",
-    footerAddress: "Tq. Malkapur, Dist. Buldhana - 443102",
+    footerAddress: "Gram Panchayat Ghirni, Tq. Malkapur, Dist. Buldhana - 443102",
+    villageName: "Village Ghirni",
+    welcomeMessage: "Pay your property tax online, quickly and securely.",
     language: "Language",
     english: "English",
-    marathi: "\u092e\u0930\u093e\u0920\u0940",
+    marathi: "मराठी",
 
-    // Navigation / menu
-    menu: "Menu",
+    // Tabs / nav
     home: "Home",
+    payTax: "Pay Tax",
+    history: "History",
+    profile: "Profile",
     dashboard: "Dashboard",
     taxSummary: "Tax Summary",
     taxHistory: "Tax History",
     paymentHistory: "Payment History",
-    payTax: "Pay Tax",
     receipts: "Receipts",
     logout: "Logout",
+    menu: "Menu",
+
+    // Home / dashboard
+    welcome: "Welcome",
+    totalOutstandingDue: "Total Outstanding Due",
+    outstandingDue: "Outstanding Due",
+    status: "Status",
+    statusPaid: "Paid",
+    statusPending: "Pending",
+    statusOverdue: "Overdue",
+    statistics: "Statistics",
+    currentTax: "Current Tax",
+    paidAmount: "Paid Amount",
+    previousBalance: "Previous Balance",
+    remainingAmount: "Remaining Amount",
+    remaining: "Remaining",
+    penalty: "Penalty",
+    totalDue: "Total Due",
+    dueDate: "Due Date",
+    quickActions: "Quick Actions",
+    qaDownloadReceipt: "Download Receipt",
+    qaContactOffice: "Contact Office",
+    qaPropertyDetails: "Property Details",
+    announcements: "Announcements",
+    latestNotices: "Latest notices & government announcements",
+    notice1: "Pay property tax before 31 March to avoid 2% monthly penalty.",
+    notice2: "Gram Sabha meeting scheduled on the first Sunday of every month.",
+    notice3: "Swachh Gram Abhiyan - keep your ward clean and green.",
+    notifications: "Notifications",
+    noNotifications: "No new notifications",
+
+    // Tax summary
+    paymentProgress: "Payment Progress",
+    percentPaid: "% Paid",
+    percentRemaining: "% Remaining",
+
+    // Tax history
+    year: "Year",
+    tax: "Tax",
+    paid: "Paid",
+    due: "Due",
+    noHistory: "No tax history available",
+    search: "Search",
+    searchYear: "Search by year...",
+    filterByYear: "Filter by year",
+    all: "All",
+    downloadStatement: "Download Statement",
+
+    // Payment history
+    receiptNo: "Receipt No.",
+    receiptNumber: "Receipt Number",
+    date: "Date",
+    amount: "Amount",
+    mode: "Mode",
+    noPayments: "No payments yet",
+    downloadPdf: "Download PDF",
+    shareReceipt: "Share Receipt",
+    download: "Download",
+    downloaded: "Downloaded",
+    downloadFailed: "Download failed",
+    completed: "Completed",
+
+    // Pay screen
+    chooseWhatToPay: "Choose what to pay",
+    fullPayment: "Full Payment",
+    currentYearTax: "Current Year Tax",
+    customAmount: "Custom Amount",
+    orEnterCustomAmount: "Enter custom amount",
+    enterAnyAmount: "Enter amount",
+    amountToPay: "Amount to pay",
+    paymentMethods: "Payment Methods",
+    upi: "UPI",
+    debitCard: "Debit Card",
+    creditCard: "Credit Card",
+    netBanking: "Net Banking",
+    paymentMethodsNote: "Choose your preferred method on the secure Razorpay screen.",
+    proceedToSecurePayment: "Proceed to Secure Payment",
+    payNowRazorpay: "Pay Now with Razorpay",
+    paymentNote: "Payments are processed securely via Razorpay. A digital receipt is generated automatically.",
+    invalidAmount: "Invalid amount",
+    enterAmountGtZero: "Please enter an amount greater than zero.",
+    customMaxDue: "Custom amount cannot be greater than the outstanding due. It must be equal to or less than the due amount.",
+    couldNotStartPayment: "Could not start payment",
+    securePayment: "Secure Payment",
+    cancel: "Cancel",
+    paymentSuccessful: "Payment Successful",
+    paymentSuccessMsg: "Your payment was received. Thank you!",
+    paymentNotCompleted: "Payment not completed",
+    paymentFailedMsg: "The payment could not be completed.",
+    verificationFailed: "Verification failed",
+
+    // Receipt screen
+    transactionId: "Transaction ID",
+    taxpayerName: "Taxpayer Name",
+    propertyId: "Property ID",
+    paymentMode: "Payment Mode",
+    backToDashboard: "Back to Dashboard",
+    scanToVerify: "Scan to verify",
+    downloadReceiptPdf: "Download Receipt PDF",
+    noReceiptYet: "No receipt to show yet",
+
+    // Profile
+    taxpayerInformation: "Taxpayer Information",
+    taxpayerId: "Taxpayer ID",
+    name: "Name",
+    fatherName: "Father's Name",
+    village: "Village",
+    wardNumber: "Ward Number",
+    mobile: "Mobile",
+    email: "Email",
+    propertyDetails: "Property Details",
+    propertyNumber: "Property Number",
+    propertyType: "Property Type",
+    area: "Area",
+    assessmentValue: "Assessment Value",
+    editProfile: "Edit Profile",
+    changePassword: "Change Password",
+    appearance: "Appearance",
+    theme: "Theme",
+    lightMode: "Light",
+    darkMode: "Dark",
+    systemMode: "System",
+    comingSoon: "This feature is coming soon.",
+    contactInfo: "Office: Gram Panchayat Ghirni, Tq. Malkapur, Dist. Buldhana - 443102",
 
     // Auth
     login: "Login",
     loginFailed: "Login failed",
-    activateNewAccount: "Activate New Account",
-    activateAccount: "Activate Taxpayer Account",
-    idLabel: "Email / Mobile / Taxpayer ID",
+    required: "Required",
+    enterIdAndPassword: "Please enter your ID and password.",
+    idLabel: "Taxpayer ID / Mobile",
     idPlaceholder: "e.g. GPG-TP-000001",
     password: "Password",
-    passwordPlaceholder: "Your password",
-    required: "Required",
-    enterIdAndPassword: "Enter your Email/Mobile/Taxpayer ID and password.",
-    newTaxpayerNote:
-      'New taxpayer? Tap "Activate New Account" to verify your record and set a password.',
+    passwordPlaceholder: "Enter your password",
+    activateNewAccount: "Activate New Account",
+    newTaxpayerNote: "New taxpayer? Activate your account with the OTP sent to your registered email.",
+    activateAccount: "Activate Account",
     searchRecords: "Search Records",
     sendOtp: "Send OTP",
     enterOtp: "Enter OTP",
-    otpPlaceholder: "6-digit code",
+    otpPlaceholder: "6-digit OTP",
     createPassword: "Create Password",
     atLeast6: "At least 6 characters",
     confirmPassword: "Confirm Password",
     reEnterPassword: "Re-enter password",
     verifyCreateAccount: "Verify & Create Account",
     resendOtp: "Resend OTP",
-    alreadyActivated: "Already activated? Log in",
-    otpSentTo: "An OTP has been sent to ",
-    recordFoundInfo:
-      "Your taxpayer record was found. We will send a one-time password (OTP) to your registered email ",
-
-    // Profile fields
-    profile: "Profile",
-    taxpayerId: "Taxpayer ID",
-    name: "Name",
-    fatherName: "Father's Name",
-    houseNumber: "House Number",
-    propertyNumber: "Property Number",
-    wardNumber: "Ward Number",
-    village: "Village",
-    mobile: "Mobile",
-    email: "Email",
-    address: "Address",
-
-    // Tax summary
-    previousBalance: "Previous Balance",
-    currentTax: "Current Tax",
-    penalty: "Penalty",
-    totalDue: "Total Due",
-    paidAmount: "Paid Amount",
-    remaining: "Remaining",
-    dueDate: "Due Date",
-    status: "Status",
-    totalOutstandingDue: "Total Outstanding Due",
-    outstandingDue: "Outstanding Due",
-
-    // Tax history table
-    year: "Year",
-    tax: "Tax",
-    paid: "Paid",
-    due: "Due",
-    noHistory: "No history",
-
-    // Payment history
-    receiptNo: "Receipt No.",
-    date: "Date",
-    amount: "Amount",
-    mode: "Mode",
-    receipt: "Receipt",
-    noPayments: "No payments yet",
-
-    // Pay screen
-    amountToPay: "Amount to pay",
-    enterAnyAmount: "Enter any amount",
-    payHint: "You can pay the full due or enter a custom amount.",
-    payCurrentYearTax: "Pay Current Year Tax",
-    fullDue: "Full Due",
-    customAmount: "Custom Amount",
-    payNowRazorpay: "Pay Now with Razorpay",
-    paymentNote:
-      "Payments are processed securely via Razorpay. A digital receipt with a QR code is emailed to you after a successful payment.",
-    invalidAmount: "Invalid amount",
-    enterAmountGtZero: "Enter an amount greater than zero.",
-    couldNotStartPayment: "Could not start payment",
-    securePayment: "Secure Payment",
-    cancel: "Cancel",
-    loadingGateway: "Loading secure payment gateway...",
-    paymentSuccessful: "Payment successful",
-    paymentSuccessMsg:
-      "Your payment is recorded. The digital receipt has been emailed to you and is available in the Receipts section.",
-    paymentNotCompleted: "Payment not completed",
-    paymentFailedMsg: "Payment failed. Please try again.",
-    verificationFailed: "Verification failed",
-
-    // Receipts
-    yourReceipts: "Your Receipts",
-    financialYear: "Financial Year",
-    download: "Download",
-    downloadReceipt: "Download Receipt (PDF)",
-    downloadFailed: "Download failed",
-    downloaded: "Downloaded",
-    noReceipts:
-      "No receipts yet. After a successful payment, your digital receipt is emailed to you and appears here.",
-
-    // Common
-    payNow: "Pay Now",
-    viewReceipts: "View Receipts",
-    goToPayTax: "Go to Pay Tax",
-    noData: "No data available",
-    welcome: "Welcome",
-    chooseWhatToPay: "Choose what to pay",
-    orEnterCustomAmount: "Or enter a custom amount",
-    currentYearTax: "Current Year Tax",
+    alreadyActivated: "Already activated? Login",
+    recordFoundInfo: "Record found. We will send an OTP to ",
+    otpSent: "OTP Sent",
+    otpSentTo: "OTP sent to ",
     notFound: "Not found",
-    otpSent: "OTP sent",
     couldNotSendOtp: "Could not send OTP",
     weakPassword: "Weak password",
     passwordMin6: "Password must be at least 6 characters.",
     mismatch: "Mismatch",
     passwordsNoMatch: "Passwords do not match.",
     activationFailed: "Activation failed",
-    enterOtpAndPassword: "Enter the OTP and a new password.",
+    enterOtpAndPassword: "Please enter the OTP and a password.",
     somethingWrong: "Something went wrong. Please try again.",
-    enterIdOnly: "Enter your Email / Mobile / Taxpayer ID.",
-    alreadyActivatedMsg:
-      "This account is already active. Please log in instead.",
+    enterIdOnly: "Please enter your Taxpayer ID or mobile number.",
+    alreadyActivatedMsg: "This account is already activated. Please login.",
   },
 
   mr: {
-    appName:
-      "\u0917\u094d\u0930\u093e\u092e\u092a\u0902\u091a\u093e\u092f\u0924 \u0918\u093f\u0930\u0923\u0940",
-    govLine:
-      "\u092e\u0939\u093e\u0930\u093e\u0937\u094d\u091f\u094d\u0930 \u0936\u093e\u0938\u0928",
-    citizenServices:
-      "\u0928\u093e\u0917\u0930\u093f\u0915 \u0915\u0930 \u0938\u0947\u0935\u093e",
-    footerAddress:
-      "\u0924\u093e. \u092e\u0932\u0915\u093e\u092a\u0942\u0930, \u091c\u093f. \u092c\u0941\u0932\u0922\u093e\u0923\u093e - 443102",
-    language: "\u092d\u093e\u0937\u093e",
+    // App / header
+    appName: "ग्राम पंचायत घिरणी",
+    govLine: "महाराष्ट्र शासन",
+    citizenServices: "नागरिक कर सेवा",
+    footerAddress: "ग्राम पंचायत घिरणी, ता. मलकापूर, जि. बुलढाणा - ४४३१०२",
+    villageName: "घिरणी गाव",
+    welcomeMessage: "आपला मालमत्ता कर ऑनलाइन, जलद आणि सुरक्षितपणे भरा.",
+    language: "भाषा",
     english: "English",
-    marathi: "\u092e\u0930\u093e\u0920\u0940",
+    marathi: "मराठी",
 
-    menu: "\u092e\u0947\u0928\u0942",
-    home: "\u092e\u0941\u0916\u094d\u092f\u092a\u0943\u0937\u094d\u0920",
-    dashboard: "\u0921\u0945\u0936\u092c\u094b\u0930\u094d\u0921",
-    taxSummary: "\u0915\u0930 \u0938\u093e\u0930\u093e\u0902\u0936",
-    taxHistory: "\u0915\u0930 \u0907\u0924\u093f\u0939\u093e\u0938",
-    paymentHistory:
-      "\u092a\u0947\u092e\u0947\u0902\u091f \u0907\u0924\u093f\u0939\u093e\u0938",
-    payTax: "\u0915\u0930 \u092d\u0930\u093e",
-    receipts: "\u092a\u093e\u0935\u0924\u094d\u092f\u093e",
-    logout: "\u0932\u0949\u0917\u0906\u0909\u091f",
+    // Tabs / nav
+    home: "मुख्यपृष्ठ",
+    payTax: "कर भरा",
+    history: "इतिहास",
+    profile: "प्रोफाइल",
+    dashboard: "डॅशबोर्ड",
+    taxSummary: "कर सारांश",
+    taxHistory: "कर इतिहास",
+    paymentHistory: "भरणा इतिहास",
+    receipts: "पावत्या",
+    logout: "बाहेर पडा",
+    menu: "मेनू",
 
-    login: "\u0932\u0949\u0917\u093f\u0928",
-    loginFailed:
-      "\u0932\u0949\u0917\u093f\u0928 \u0905\u092f\u0936\u0938\u094d\u0935\u0940",
-    activateNewAccount:
-      "\u0928\u0935\u0940\u0928 \u0916\u093e\u0924\u0947 \u0938\u0915\u094d\u0930\u093f\u092f \u0915\u0930\u093e",
-    activateAccount:
-      "\u0915\u0930\u0926\u093e\u0924\u093e \u0916\u093e\u0924\u0947 \u0938\u0915\u094d\u0930\u093f\u092f \u0915\u0930\u093e",
-    idLabel:
-      "\u0908\u092e\u0947\u0932 / \u092e\u094b\u092c\u093e\u0907\u0932 / \u0915\u0930\u0926\u093e\u0924\u093e \u0906\u092f\u0921\u0940",
-    idPlaceholder: "\u0909\u0926\u093e. GPG-TP-000001",
-    password: "\u092a\u093e\u0938\u0935\u0930\u094d\u0921",
-    passwordPlaceholder:
-      "\u0924\u0941\u092e\u091a\u093e \u092a\u093e\u0938\u0935\u0930\u094d\u0921",
-    required: "\u0906\u0935\u0936\u094d\u092f\u0915",
-    enterIdAndPassword:
-      "\u0924\u0941\u092e\u091a\u093e \u0908\u092e\u0947\u0932/\u092e\u094b\u092c\u093e\u0907\u0932/\u0915\u0930\u0926\u093e\u0924\u093e \u0906\u092f\u0921\u0940 \u0906\u0923\u093f \u092a\u093e\u0938\u0935\u0930\u094d\u0921 \u092a\u094d\u0930\u0935\u093f\u0937\u094d\u091f \u0915\u0930\u093e.",
-    newTaxpayerNote:
-      '\u0928\u0935\u0940\u0928 \u0915\u0930\u0926\u093e\u0924\u093e? \u0916\u093e\u0924\u0947 \u0938\u0915\u094d\u0930\u093f\u092f \u0915\u0930\u0923\u094d\u092f\u093e\u0938\u093e\u0920\u0940 "\u0928\u0935\u0940\u0928 \u0916\u093e\u0924\u0947 \u0938\u0915\u094d\u0930\u093f\u092f \u0915\u0930\u093e" \u0935\u0930 \u0915\u094d\u0932\u093f\u0915 \u0915\u0930\u093e.',
-    searchRecords: "\u0928\u094b\u0902\u0926\u0940 \u0936\u094b\u0927\u093e",
-    sendOtp: "OTP \u092a\u093e\u0920\u0935\u093e",
-    enterOtp:
-      "OTP \u092a\u094d\u0930\u0935\u093f\u0937\u094d\u091f \u0915\u0930\u093e",
-    otpPlaceholder: "6-\u0905\u0902\u0915\u0940 \u0915\u094b\u0921",
-    createPassword:
-      "\u092a\u093e\u0938\u0935\u0930\u094d\u0921 \u0924\u092f\u093e\u0930 \u0915\u0930\u093e",
-    atLeast6:
-      "\u0915\u093f\u092e\u093e\u0928 6 \u0905\u0915\u094d\u0937\u0930\u0947",
-    confirmPassword:
-      "\u092a\u093e\u0938\u0935\u0930\u094d\u0921 \u0928\u093f\u0936\u094d\u091a\u093f\u0924 \u0915\u0930\u093e",
-    reEnterPassword:
-      "\u092a\u093e\u0938\u0935\u0930\u094d\u0921 \u092a\u0941\u0928\u094d\u0939\u093e \u092a\u094d\u0930\u0935\u093f\u0937\u094d\u091f \u0915\u0930\u093e",
-    verifyCreateAccount:
-      "\u0924\u092a\u093e\u0938\u093e \u0935 \u0916\u093e\u0924\u0947 \u0924\u092f\u093e\u0930 \u0915\u0930\u093e",
-    resendOtp:
-      "OTP \u092a\u0941\u0928\u094d\u0939\u093e \u092a\u093e\u0920\u0935\u093e",
-    alreadyActivated:
-      "\u0906\u0927\u0940\u091a \u0938\u0915\u094d\u0930\u093f\u092f? \u0932\u0949\u0917\u093f\u0928 \u0915\u0930\u093e",
-    otpSentTo:
-      "OTP \u092f\u093e \u092a\u0924\u094d\u0924\u094d\u092f\u093e\u0935\u0930 \u092a\u093e\u0920\u0935\u0932\u093e \u0906\u0939\u0947: ",
-    recordFoundInfo:
-      "\u0924\u0941\u092e\u091a\u0940 \u0915\u0930\u0926\u093e\u0924\u093e \u0928\u094b\u0902\u0926 \u0938\u093e\u092a\u0921\u0932\u0940. \u0906\u092e\u094d\u0939\u0940 \u0924\u0941\u092e\u091a\u094d\u092f\u093e \u0928\u094b\u0902\u0926\u0923\u0940\u0915\u0943\u0924 \u0908\u092e\u0947\u0932\u0935\u0930 OTP \u092a\u093e\u0920\u0935\u0942: ",
+    // Home / dashboard
+    welcome: "स्वागत आहे",
+    totalOutstandingDue: "एकूण थकबाकी",
+    outstandingDue: "थकबाकी",
+    status: "स्थिती",
+    statusPaid: "भरले",
+    statusPending: "प्रलंबित",
+    statusOverdue: "मुदत संपली",
+    statistics: "आकडेवारी",
+    currentTax: "चालू कर",
+    paidAmount: "भरलेली रक्कम",
+    previousBalance: "मागील शिल्लक",
+    remainingAmount: "उर्वरित रक्कम",
+    remaining: "उर्वरित",
+    penalty: "दंड",
+    totalDue: "एकूण देय",
+    dueDate: "देय दिनांक",
+    quickActions: "जलद क्रिया",
+    qaDownloadReceipt: "पावती डाउनलोड",
+    qaContactOffice: "कार्यालय संपर्क",
+    qaPropertyDetails: "मालमत्ता तपशील",
+    announcements: "घोषणा",
+    latestNotices: "नवीनतम सूचना व शासकीय घोषणा",
+    notice1: "२% मासिक दंड टाळण्यासाठी ३१ मार्चपूर्वी मालमत्ता कर भरा.",
+    notice2: "ग्रामसभा दर महिन्याच्या पहिल्या रविवारी आयोजित केली जाते.",
+    notice3: "स्वच्छ ग्राम अभियान - आपला वॉर्ड स्वच्छ व हरित ठेवा.",
+    notifications: "सूचना",
+    noNotifications: "नवीन सूचना नाहीत",
 
-    profile: "\u092a\u094d\u0930\u094b\u092b\u093e\u0907\u0932",
-    taxpayerId: "\u0915\u0930\u0926\u093e\u0924\u093e \u0906\u092f\u0921\u0940",
-    name: "\u0928\u093e\u0935",
-    fatherName:
-      "\u0935\u0921\u093f\u0932\u093e\u0902\u091a\u0947 \u0928\u093e\u0935",
-    houseNumber: "\u0918\u0930 \u0915\u094d\u0930\u092e\u093e\u0902\u0915",
-    propertyNumber:
-      "\u092e\u093e\u0932\u092e\u0924\u094d\u0924\u093e \u0915\u094d\u0930\u092e\u093e\u0902\u0915",
-    wardNumber:
-      "\u092a\u094d\u0930\u092d\u093e\u0917 \u0915\u094d\u0930\u092e\u093e\u0902\u0915",
-    village: "\u0917\u093e\u0935",
-    mobile: "\u092e\u094b\u092c\u093e\u0907\u0932",
-    email: "\u0908\u092e\u0947\u0932",
-    address: "\u092a\u0924\u094d\u0924\u093e",
+    // Tax summary
+    paymentProgress: "भरणा प्रगती",
+    percentPaid: "% भरले",
+    percentRemaining: "% उर्वरित",
 
-    previousBalance:
-      "\u092e\u093e\u0917\u0940\u0932 \u0936\u093f\u0932\u094d\u0932\u0915",
-    currentTax: "\u091a\u093e\u0932\u0942 \u0915\u0930",
-    penalty: "\u0926\u0902\u0921",
-    totalDue: "\u090f\u0915\u0942\u0923 \u092c\u093e\u0915\u0940",
-    paidAmount:
-      "\u092d\u0930\u0932\u0947\u0932\u0940 \u0930\u0915\u094d\u0915\u092e",
-    remaining: "\u0909\u0930\u094d\u0935\u0930\u093f\u0924",
-    dueDate: "\u0905\u0902\u0924\u093f\u092e \u0924\u093e\u0930\u0940\u0916",
-    status: "\u0938\u094d\u0925\u093f\u0924\u0940",
-    totalOutstandingDue:
-      "\u090f\u0915\u0942\u0923 \u0925\u0915\u0940\u0924 \u092c\u093e\u0915\u0940",
-    outstandingDue: "\u0925\u0915\u0940\u0924 \u092c\u093e\u0915\u0940",
+    // Tax history
+    year: "वर्ष",
+    tax: "कर",
+    paid: "भरले",
+    due: "देय",
+    noHistory: "कर इतिहास उपलब्ध नाही",
+    search: "शोधा",
+    searchYear: "वर्षानुसार शोधा...",
+    filterByYear: "वर्षानुसार फिल्टर",
+    all: "सर्व",
+    downloadStatement: "विवरण डाउनलोड करा",
 
-    year: "\u0935\u0930\u094d\u0937",
-    tax: "\u0915\u0930",
-    paid: "\u092d\u0930\u0932\u0947",
-    due: "\u092c\u093e\u0915\u0940",
-    noHistory: "\u0907\u0924\u093f\u0939\u093e\u0938 \u0928\u093e\u0939\u0940",
+    // Payment history
+    receiptNo: "पावती क्र.",
+    receiptNumber: "पावती क्रमांक",
+    date: "दिनांक",
+    amount: "रक्कम",
+    mode: "पद्धत",
+    noPayments: "अद्याप कोणताही भरणा नाही",
+    downloadPdf: "PDF डाउनलोड",
+    shareReceipt: "पावती शेअर करा",
+    download: "डाउनलोड",
+    downloaded: "डाउनलोड झाले",
+    downloadFailed: "डाउनलोड अयशस्वी",
+    completed: "पूर्ण",
 
-    receiptNo: "\u092a\u093e\u0935\u0924\u0940 \u0915\u094d\u0930.",
-    date: "\u0924\u093e\u0930\u0940\u0916",
-    amount: "\u0930\u0915\u094d\u0915\u092e",
-    mode: "\u092a\u0926\u094d\u0927\u0924",
-    receipt: "\u092a\u093e\u0935\u0924\u0940",
-    noPayments:
-      "\u0905\u0926\u094d\u092f\u093e\u092a \u092a\u0947\u092e\u0947\u0902\u091f \u0928\u093e\u0939\u0940",
+    // Pay screen
+    chooseWhatToPay: "काय भरायचे ते निवडा",
+    fullPayment: "संपूर्ण भरणा",
+    currentYearTax: "चालू वर्ष कर",
+    customAmount: "सानुकूल रक्कम",
+    orEnterCustomAmount: "सानुकूल रक्कम टाका",
+    enterAnyAmount: "रक्कम टाका",
+    amountToPay: "भरावयाची रक्कम",
+    paymentMethods: "भरणा पद्धती",
+    upi: "UPI",
+    debitCard: "डेबिट कार्ड",
+    creditCard: "क्रेडिट कार्ड",
+    netBanking: "नेट बँकिंग",
+    paymentMethodsNote: "सुरक्षित Razorpay स्क्रीनवर आपली पसंतीची पद्धत निवडा.",
+    proceedToSecurePayment: "सुरक्षित भरण्याकडे जा",
+    payNowRazorpay: "Razorpay ने आता भरा",
+    paymentNote: "भरण��� Razorpay मार्फत सुरक्षितपणे केला जातो. डिजिटल पावती आपोआप तयार होते.",
+    invalidAmount: "अवैध रक्कम",
+    enterAmountGtZero: "कृपया शून्यापेक्षा जास्त रक्कम टाका.",
+    customMaxDue: "सानुकूल रक्कम थकबाकीपेक्षा जास्त असू शकत नाही. ती थकबाकीइतकी किंवा त्यापेक्षा कमी असावी.",
+    couldNotStartPayment: "भरणा सुरू करता आला नाही",
+    securePayment: "सुरक्षित भरणा",
+    cancel: "रद्द करा",
+    paymentSuccessful: "भरणा यशस्वी",
+    paymentSuccessMsg: "आपला भरणा प्राप्त झाला. धन्यवाद!",
+    paymentNotCompleted: "भरणा पूर्ण झाला नाही",
+    paymentFailedMsg: "भरणा पूर्ण करता आला नाही.",
+    verificationFailed: "पडताळणी अयशस्वी",
 
-    amountToPay:
-      "\u092d\u0930\u093e\u0935\u092f\u093e\u091a\u0940 \u0930\u0915\u094d\u0915\u092e",
-    enterAnyAmount:
-      "\u0915\u094b\u0923\u0924\u0940\u0939\u0940 \u0930\u0915\u094d\u0915\u092e \u092a\u094d\u0930\u0935\u093f\u0937\u094d\u091f \u0915\u0930\u093e",
-    payHint:
-      "\u0924\u0941\u092e\u094d\u0939\u0940 \u0938\u0902\u092a\u0942\u0930\u094d\u0923 \u092c\u093e\u0915\u0940 \u0915\u093f\u0902\u0935\u093e \u0938\u093e\u0928\u0941\u0915\u0942\u0932 \u0930\u0915\u094d\u0915\u092e \u092d\u0930\u0942 \u0936\u0915\u0924\u093e.",
-    payCurrentYearTax:
-      "\u091a\u093e\u0932\u0942 \u0935\u0930\u094d\u0937\u093e\u091a\u093e \u0915\u0930 \u092d\u0930\u093e",
-    fullDue:
-      "\u0938\u0902\u092a\u0942\u0930\u094d\u0923 \u092c\u093e\u0915\u0940",
-    customAmount:
-      "\u0938\u093e\u0928\u0941\u0915\u0942\u0932 \u0930\u0915\u094d\u0915\u092e",
-    payNowRazorpay:
-      "Razorpay \u0926\u094d\u0935\u093e\u0930\u0947 \u0906\u0924\u093e \u092d\u0930\u093e",
-    paymentNote:
-      "\u092a\u0947\u092e\u0947\u0902\u091f Razorpay \u0926\u094d\u0935\u093e\u0930\u0947 \u0938\u0941\u0930\u0915\u094d\u0937\u093f\u0924\u092a\u0923\u0947 \u092a\u094d\u0930\u0915\u094d\u0930\u093f\u092f\u093e \u0915\u0947\u0932\u0940 \u091c\u093e\u0924\u0947. \u092f\u0936\u0938\u094d\u0935\u0940 \u092a\u0947\u092e\u0947\u0902\u091f\u0928\u0902\u0924\u0930 QR \u0915\u094b\u0921\u0938\u0939 \u0921\u093f\u091c\u093f\u091f\u0932 \u092a\u093e\u0935\u0924\u0940 \u0924\u0941\u092e\u094d\u0939\u093e\u0932\u093e \u0908\u092e\u0947\u0932 \u0915\u0947\u0932\u0940 \u091c\u093e\u0924\u0947.",
-    invalidAmount: "\u0905\u0935\u0948\u0927 \u0930\u0915\u094d\u0915\u092e",
-    enterAmountGtZero:
-      "\u0936\u0942\u0928\u094d\u092f\u093e\u092a\u0947\u0915\u094d\u0937\u093e \u091c\u093e\u0938\u094d\u0924 \u0930\u0915\u094d\u0915\u092e \u092a\u094d\u0930\u0935\u093f\u0937\u094d\u091f \u0915\u0930\u093e.",
-    couldNotStartPayment:
-      "\u092a\u0947\u092e\u0947\u0902\u091f \u0938\u0941\u0930\u0942 \u0915\u0930\u0924\u093e \u0906\u0932\u0947 \u0928\u093e\u0939\u0940",
-    securePayment:
-      "\u0938\u0941\u0930\u0915\u094d\u0937\u093f\u0924 \u092a\u0947\u092e\u0947\u0902\u091f",
-    cancel: "\u0930\u0926\u094d\u0926 \u0915\u0930\u093e",
-    loadingGateway:
-      "\u0938\u0941\u0930\u0915\u094d\u0937\u093f\u0924 \u092a\u0947\u092e\u0947\u0902\u091f \u0917\u0947\u091f\u0935\u0947 \u0932\u094b\u0921 \u0939\u094b\u0924 \u0906\u0939\u0947...",
-    paymentSuccessful:
-      "\u092a\u0947\u092e\u0947\u0902\u091f \u092f\u0936\u0938\u094d\u0935\u0940",
-    paymentSuccessMsg:
-      "\u0924\u0941\u092e\u091a\u0947 \u092a\u0947\u092e\u0947\u0902\u091f \u0928\u094b\u0902\u0926\u0935\u0932\u0947 \u0917\u0947\u0932\u0947 \u0906\u0939\u0947. \u0921\u093f\u091c\u093f\u091f\u0932 \u092a\u093e\u0935\u0924\u0940 \u0924\u0941\u092e\u094d\u0939\u093e\u0932\u093e \u0908\u092e\u0947\u0932 \u0915\u0947\u0932\u0940 \u0906\u0939\u0947 \u0906\u0923\u093f \u092a\u093e\u0935\u0924\u094d\u092f\u093e \u0935\u093f\u092d\u093e\u0917\u093e\u0924 \u0909\u092a\u0932\u092c\u094d\u0927 \u0906\u0939\u0947.",
-    paymentNotCompleted:
-      "\u092a\u0947\u092e\u0947\u0902\u091f \u092a\u0942\u0930\u094d\u0923 \u091d\u093e\u0932\u0947 \u0928\u093e\u0939\u0940",
-    paymentFailedMsg:
-      "\u092a\u0947\u092e\u0947\u0902\u091f \u0905\u092f\u0936\u0938\u094d\u0935\u0940. \u0915\u0943\u092a\u092f\u093e \u092a\u0941\u0928\u094d\u0939\u093e \u092a\u094d\u0930\u092f\u0924\u094d\u0928 \u0915\u0930\u093e.",
-    verificationFailed:
-      "\u092a\u0921\u0924\u093e\u0933\u0923\u0940 \u0905\u092f\u0936\u0938\u094d\u0935\u0940",
+    // Receipt screen
+    transactionId: "व्यवहार क्रमांक",
+    taxpayerName: "करदाता नाव",
+    propertyId: "मालमत्ता क्रमांक",
+    paymentMode: "भरणा पद्धत",
+    backToDashboard: "डॅशबोर्डकडे परत",
+    scanToVerify: "पडताळणीसाठी स्कॅन करा",
+    downloadReceiptPdf: "पावती PDF डाउनलोड",
+    noReceiptYet: "दाखवण्यासाठी अद्याप पावती नाही",
 
-    yourReceipts:
-      "\u0924\u0941\u092e\u091a\u094d\u092f\u093e \u092a\u093e\u0935\u0924\u094d\u092f\u093e",
-    financialYear:
-      "\u0906\u0930\u094d\u0925\u093f\u0915 \u0935\u0930\u094d\u0937",
-    download: "\u0921\u093e\u0909\u0928\u0932\u094b\u0921",
-    downloadReceipt:
-      "\u092a\u093e\u0935\u0924\u0940 \u0921\u093e\u0909\u0928\u0932\u094b\u0921 \u0915\u0930\u093e (PDF)",
-    downloadFailed:
-      "\u0921\u093e\u0909\u0928\u0932\u094b\u0921 \u0905\u092f\u0936\u0938\u094d\u0935\u0940",
-    downloaded:
-      "\u0921\u093e\u0909\u0928\u0932\u094b\u0921 \u091d\u093e\u0932\u0947",
-    noReceipts:
-      "\u0905\u0926\u094d\u092f\u093e\u092a \u092a\u093e\u0935\u0924\u094d\u092f\u093e \u0928\u093e\u0939\u0940\u0924. \u092f\u0936\u0938\u094d\u0935\u0940 \u092a\u0947\u092e\u0947\u0902\u091f\u0928\u0902\u0924\u0930 \u0924\u0941\u092e\u091a\u0940 \u0921\u093f\u091c\u093f\u091f\u0932 \u092a\u093e\u0935\u0924\u0940 \u092f\u0947\u0925\u0947 \u0926\u093f\u0938\u0947\u0932.",
+    // Profile
+    taxpayerInformation: "करदाता माहिती",
+    taxpayerId: "करदाता क्रमांक",
+    name: "नाव",
+    fatherName: "वडिलांचे नाव",
+    village: "गाव",
+    wardNumber: "वॉर्ड क्रमांक",
+    mobile: "मोबाइल",
+    email: "ईमेल",
+    propertyDetails: "मालमत्ता तपशील",
+    propertyNumber: "मालमत्ता क्रमांक",
+    propertyType: "मालमत्ता प्रकार",
+    area: "क्षेत्रफळ",
+    assessmentValue: "मूल्यांकन मूल्य",
+    editProfile: "प्रोफाइल संपादित करा",
+    changePassword: "पासवर्ड बदला",
+    appearance: "स्वरूप",
+    theme: "थीम",
+    lightMode: "उजळ",
+    darkMode: "गडद",
+    systemMode: "प्रणाली",
+    comingSoon: "हे वैशिष्ट्य लवकरच येत आहे.",
+    contactInfo: "कार्यालय: ग्राम पंचायत घिरणी, ता. मलकापूर, जि. बुलढाणा - ४४३१०२",
 
-    payNow: "\u0906\u0924\u093e \u092d\u0930\u093e",
-    viewReceipts:
-      "\u092a\u093e\u0935\u0924\u094d\u092f\u093e \u092a\u0939\u093e",
-    goToPayTax: "\u0915\u0930 \u092d\u0930\u093e",
-    noData:
-      "\u092e\u093e\u0939\u093f\u0924\u0940 \u0909\u092a\u0932\u092c\u094d\u0927 \u0928\u093e\u0939\u0940",
-    welcome: "\u0938\u094d\u0935\u093e\u0917\u0924 \u0906\u0939\u0947",
-    chooseWhatToPay:
-      "\u0915\u093e\u092f \u092d\u0930\u093e\u092f\u091a\u0947 \u0924\u0947 \u0928\u093f\u0935\u0921\u093e",
-    orEnterCustomAmount:
-      "\u0915\u093f\u0902\u0935\u093e \u0938\u093e\u0928\u0941\u0915\u0942\u0932 \u0930\u0915\u094d\u0915\u092e \u092a\u094d\u0930\u0935\u093f\u0937\u094d\u091f \u0915\u0930\u093e",
-    currentYearTax:
-      "\u091a\u093e\u0932\u0942 \u0935\u0930\u094d\u0937\u093e\u091a\u093e \u0915\u0930",
-    notFound: "\u0938\u093e\u092a\u0921\u0932\u0947 \u0928\u093e\u0939\u0940",
-    otpSent: "OTP \u092a\u093e\u0920\u0935\u0932\u093e",
-    couldNotSendOtp:
-      "OTP \u092a\u093e\u0920\u0935\u0924\u093e \u0906\u0932\u093e \u0928\u093e\u0939\u0940",
-    weakPassword:
-      "\u0915\u092e\u0915\u0941\u0935\u0924 \u092a\u093e\u0938\u0935\u0930\u094d\u0921",
-    passwordMin6:
-      "\u092a\u093e\u0938\u0935\u0930\u094d\u0921 \u0915\u093f\u092e\u093e\u0928 6 \u0905\u0915\u094d\u0937\u0930\u093e\u0902\u091a\u093e \u0905\u0938\u093e\u0935\u093e.",
-    mismatch: "\u091c\u0941\u0933\u0924 \u0928\u093e\u0939\u0940",
-    passwordsNoMatch:
-      "\u092a\u093e\u0938\u0935\u0930\u094d\u0921 \u091c\u0941\u0933\u0924 \u0928\u093e\u0939\u0940\u0924.",
-    activationFailed:
-      "\u0916\u093e\u0924\u0947 \u0938\u0915\u094d\u0930\u093f\u092f \u0915\u0930\u0923\u0947 \u0905\u092f\u0936\u0938\u094d\u0935\u0940",
-    enterOtpAndPassword:
-      "OTP \u0906\u0923\u093f \u0928\u0935\u0940\u0928 \u092a\u093e\u0938\u0935\u0930\u094d\u0921 \u092a\u094d\u0930\u0935\u093f\u0937\u094d\u091f \u0915\u0930\u093e.",
-    somethingWrong:
-      "\u0915\u093e\u0939\u0940\u0924\u0930\u0940 \u091a\u0942\u0915 \u091d\u093e\u0932\u0940. \u0915\u0943\u092a\u092f\u093e \u092a\u0941\u0928\u094d\u0939\u093e \u092a\u094d\u0930\u092f\u0924\u094d\u0928 \u0915\u0930\u093e.",
-    enterIdOnly:
-      "\u0924\u0941\u092e\u091a\u093e \u0908\u092e\u0947\u0932 / \u092e\u094b\u092c\u093e\u0907\u0932 / \u0915\u0930\u0926\u093e\u0924\u093e \u0906\u092f\u0921\u0940 \u092a\u094d\u0930\u0935\u093f\u0937\u094d\u091f \u0915\u0930\u093e.",
-    alreadyActivatedMsg:
-      "\u0939\u0947 \u0916\u093e\u0924\u0947 \u0906\u0927\u0940\u091a \u0938\u0915\u094d\u0930\u093f\u092f \u0906\u0939\u0947. \u0915\u0943\u092a\u092f\u093e \u0932\u0949\u0917\u093f\u0928 \u0915\u0930\u093e.",
+    // Auth
+    login: "लॉगिन",
+    loginFailed: "लॉगिन अयशस्वी",
+    required: "आवश्यक",
+    enterIdAndPassword: "कृपया आपला आयडी व पासवर्ड टाका.",
+    idLabel: "करदाता क्रमांक / मोबाइल",
+    idPlaceholder: "उदा. GPG-TP-000001",
+    password: "पासवर्ड",
+    passwordPlaceholder: "आपला पासवर्ड टाका",
+    activateNewAccount: "नवीन खाते सक्रिय करा",
+    newTaxpayerNote: "नवीन करदाता? नोंदणीकृत ईमेलवर पाठवलेल्या OTP ने आपले खाते सक्रिय करा.",
+    activateAccount: "खाते सक्रिय करा",
+    searchRecords: "नोंदी शोधा",
+    sendOtp: "OTP पाठवा",
+    enterOtp: "OTP टाका",
+    otpPlaceholder: "६ अंकी OTP",
+    createPassword: "पासवर्ड तयार करा",
+    atLeast6: "किमान ६ अक्षरे",
+    confirmPassword: "पासवर्डची पुष्टी करा",
+    reEnterPassword: "पासवर्ड पुन्हा टाका",
+    verifyCreateAccount: "पडताळा व खाते तयार करा",
+    resendOtp: "OTP पुन्हा पाठवा",
+    alreadyActivated: "आधीच सक्रिय? लॉगिन करा",
+    recordFoundInfo: "नोंद सापडली. आम्ही OTP पाठवू ",
+    otpSent: "OTP पाठवला",
+    otpSentTo: "OTP पाठवला ",
+    notFound: "सापडले नाही",
+    couldNotSendOtp: "OTP पाठवता आला नाही",
+    weakPassword: "कमजोर पासवर्ड",
+    passwordMin6: "पासवर्ड किमान ६ अक्षरांचा असावा.",
+    mismatch: "जुळत नाही",
+    passwordsNoMatch: "पासवर्ड जुळत नाहीत.",
+    activationFailed: "सक्रियकरण अयशस्वी",
+    enterOtpAndPassword: "कृपया OTP व पासवर्ड टाका.",
+    somethingWrong: "काहीतरी चूक झाली. कृपया पुन्हा प्रयत्न करा.",
+    enterIdOnly: "कृपया आपला करदाता क्रमांक किंवा मोबाइल टाका.",
+    alreadyActivatedMsg: "हे खाते आधीच सक्रिय आहे. कृपया लॉगिन करा.",
   },
 };

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { WebView } from "react-native-webview";
 import { useI18n } from "../context/I18nContext";
-import { COLORS } from "../config";
+import { useTheme } from "../context/ThemeContext";
 
 // Renders Razorpay Checkout inside a WebView. Unlike the native
 // react-native-razorpay module, this works in Expo Go and in EAS builds
@@ -15,10 +15,12 @@ export default function RazorpayWebView({
   onClose,
 }) {
   const { t } = useI18n();
+  const { colors } = useTheme();
   const html = useMemo(
-    () => buildCheckoutHtml(order, prefill),
-    [order, prefill],
+    () => buildCheckoutHtml(order, prefill, colors.primary),
+    [order, prefill, colors.primary],
   );
+  const s = useMemo(() => make(colors), [colors]);
 
   const handleMessage = (event) => {
     let payload = null;
@@ -32,10 +34,10 @@ export default function RazorpayWebView({
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-      <View style={styles.bar}>
-        <Text style={styles.barTitle}>{t("securePayment")}</Text>
+      <View style={s.bar}>
+        <Text style={s.barTitle}>{t("securePayment")}</Text>
         <TouchableOpacity onPress={onClose}>
-          <Text style={styles.cancel}>{t("cancel")}</Text>
+          <Text style={s.cancel}>{t("cancel")}</Text>
         </TouchableOpacity>
       </View>
       {order ? (
@@ -45,7 +47,7 @@ export default function RazorpayWebView({
           onMessage={handleMessage}
           javaScriptEnabled
           domStorageEnabled
-          style={styles.web}
+          style={s.web}
         />
       ) : null}
     </Modal>
@@ -56,7 +58,7 @@ function sourceFor(html) {
   return { html };
 }
 
-function buildCheckoutHtml(order, prefill) {
+function buildCheckoutHtml(order, prefill, themeColor) {
   if (!order) return "<html><body></body></html>";
   const key = JSON.stringify(order.keyId || "");
   const amount = JSON.stringify(order.amount || 0);
@@ -65,7 +67,7 @@ function buildCheckoutHtml(order, prefill) {
   const name = JSON.stringify((prefill && prefill.name) || "");
   const email = JSON.stringify((prefill && prefill.email) || "");
   const contact = JSON.stringify((prefill && prefill.contact) || "");
-  const color = JSON.stringify(COLORS.gov);
+  const color = JSON.stringify(themeColor || "#0D47A1");
 
   const lines = [
     "<!DOCTYPE html>",
@@ -105,17 +107,19 @@ function buildCheckoutHtml(order, prefill) {
   return lines.join("\n");
 }
 
-const styles = StyleSheet.create({
-  bar: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: COLORS.gov,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    paddingTop: 44,
-  },
-  barTitle: { color: "#fff", fontWeight: "bold", fontSize: 16 },
-  cancel: { color: "#fff", fontSize: 14 },
-  web: { flex: 1 },
-});
+function make(c) {
+  return StyleSheet.create({
+    bar: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      backgroundColor: c.primary,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      paddingTop: 44,
+    },
+    barTitle: { color: "#fff", fontWeight: "bold", fontSize: 16 },
+    cancel: { color: "#fff", fontSize: 14 },
+    web: { flex: 1 },
+  });
+}

@@ -1,28 +1,33 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
   StyleSheet,
   Alert,
   ScrollView,
-  ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import api from "../api/client";
 import { useI18n } from "../context/I18nContext";
-import { COLORS } from "../config";
+import { useTheme } from "../context/ThemeContext";
+import { useDashboard } from "../context/DashboardContext";
 import RazorpayWebView from "../components/RazorpayWebView";
+import { AppHeader, PrimaryButton, inr } from "../components/ui";
 
-const inr = (n) => "Rs. " + Number(n || 0).toLocaleString("en-IN");
-
-export default function PayScreen() {
+export default function PayScreen({ navigation }) {
   const { t } = useI18n();
+  const { colors } = useTheme();
+  const { reload } = useDashboard();
+  const s = useMemo(() => make(colors), [colors]);
+
   const [due, setDue] = useState(0);
   const [currentTax, setCurrentTax] = useState(0);
   const [profile, setProfile] = useState({});
-  const [amount, setAmount] = useState("");
+  const [choice, setChoice] = useState("full"); // full | current | custom
+  const [custom, setCustom] = useState("");
   const [busy, setBusy] = useState(false);
   const [order, setOrder] = useState(null);
   const [checkoutVisible, setCheckoutVisible] = useState(false);
@@ -34,9 +39,8 @@ export default function PayScreen() {
       setDue(d.taxSummary?.totalDue || 0);
       setCurrentTax(d.taxSummary?.currentTax || 0);
       setProfile(d.profile || {});
-      setAmount(String(d.taxSummary?.totalDue || ""));
     } catch (e) {
-      // ignore, keep previous values
+      // keep previous values
     }
   }, []);
 
@@ -46,17 +50,26 @@ export default function PayScreen() {
     }, [load]),
   );
 
+  const amount =
+    choice === "full"
+      ? Number(due)
+      : choice === "current"
+        ? Number(currentTax)
+        : Number(custom);
+
   const startPayment = async () => {
     const amt = Number(amount);
     if (!amt || amt <= 0) {
       Alert.alert(t("invalidAmount"), t("enterAmountGtZero"));
       return;
     }
+    if (choice === "custom" && amt > Number(due)) {
+      Alert.alert(t("invalidAmount"), t("customMaxDue"));
+      return;
+    }
     setBusy(true);
     try {
-      const orderRes = await api.post("/payments/online/order", {
-        amount: amt,
-      });
+      const orderRes = await api.post("/payments/online/order", { amount: amt });
       setOrder(orderRes.data.data);
       setCheckoutVisible(true);
     } catch (e) {
@@ -89,8 +102,8 @@ export default function PayScreen() {
         razorpayPaymentId: resp.razorpay_payment_id,
         razorpaySignature: resp.razorpay_signature,
       });
-      Alert.alert(t("paymentSuccessful"), t("paymentSuccessMsg"));
-      load();
+      await reload();
+      navigation.navigate("Receipt", { amount: Number(amount) });
     } catch (e) {
       Alert.alert(t("verificationFailed"), String(e.message || e));
     } finally {
@@ -104,138 +117,189 @@ export default function PayScreen() {
     contact: profile.mobileNumber || "",
   };
 
-  const fullDueActive = Number(amount) === Number(due) && Number(due) > 0;
-  const currentTaxActive =
-    Number(amount) === Number(currentTax) && Number(currentTax) > 0;
+  const methods = [
+    { icon: "phone-portrait-outline", label: t("upi") },
+    { icon: "card-outline", label: t("debitCard") },
+    { icon: "card", label: t("creditCard") },
+    { icon: "business-outline", label: t("netBanking") },
+  ];
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <View style={styles.dueCard}>
-        <Text style={styles.dueLabel}>{t("outstandingDue")}</Text>
-        <Text style={styles.dueAmount}>{inr(due)}</Text>
-      </View>
+    <View style={s.screen}>
+      <AppHeader
+        title={t("payTax")}
+        subtitle={t("appName")}
+        onBell={() => Alert.alert(t("notifications"), t("noNotifications"))}
+      />
+      <ScrollView contentContainerStyle={s.content}>
+        <View style={s.dueCard}>
+          <Text style={s.dueLabel}>{t("outstandingDue")}</Text>
+          <Text style={s.dueAmount}>{inr(due)}</Text>
+        </View>
 
-      <Text style={styles.sectionLabel}>{t("chooseWhatToPay")}</Text>
-      <View style={styles.optionRow}>
-        <OptionButton
-          label={t("fullDue")}
-          amount={inr(due)}
-          active={fullDueActive}
-          onPress={() => setAmount(String(due))}
+        <Text style={s.section}>{t("chooseWhatToPay")}</Text>
+        <Radio
+          s={s}
+          colors={colors}
+          active={choice === "full"}
+          label={t("fullPayment")}
+          hint={inr(due)}
+          onPress={() => setChoice("full")}
         />
-        <OptionButton
+        <Radio
+          s={s}
+          colors={colors}
+          active={choice === "current"}
           label={t("currentYearTax")}
-          amount={inr(currentTax)}
-          active={currentTaxActive}
-          onPress={() => setAmount(String(currentTax))}
+          hint={inr(currentTax)}
+          onPress={() => setChoice("current")}
         />
-      </View>
+        <Radio
+          s={s}
+          colors={colors}
+          active={choice === "custom"}
+          label={t("customAmount")}
+          hint={t("orEnterCustomAmount")}
+          onPress={() => setChoice("custom")}
+        />
+        {choice === "custom" ? (
+          <TextInput
+            style={s.input}
+            keyboardType="numeric"
+            value={custom}
+            onChangeText={setCustom}
+            placeholder={t("enterAnyAmount")}
+            placeholderTextColor={colors.muted}
+          />
+        ) : null}
 
-      <Text style={styles.label}>{t("orEnterCustomAmount")}</Text>
-      <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        value={amount}
-        onChangeText={setAmount}
-        placeholder={t("enterAnyAmount")}
-      />
+        <Text style={s.section}>{t("paymentMethods")}</Text>
+        <View style={s.methodRow}>
+          {methods.map((m, i) => (
+            <View key={i} style={s.method}>
+              <Ionicons name={m.icon} size={20} color={colors.primary} />
+              <Text style={s.methodText}>{m.label}</Text>
+            </View>
+          ))}
+        </View>
+        <Text style={s.note}>{t("paymentMethodsNote")}</Text>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={startPayment}
-        disabled={busy}
-      >
-        {busy ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>{t("payNowRazorpay")}</Text>
-        )}
-      </TouchableOpacity>
+        <View style={s.payRow}>
+          <Text style={s.payLabel}>{t("amountToPay")}</Text>
+          <Text style={s.payValue}>{inr(amount)}</Text>
+        </View>
+        <PrimaryButton
+          label={t("proceedToSecurePayment")}
+          icon="lock-closed"
+          color={colors.success}
+          loading={busy}
+          onPress={startPayment}
+        />
+        <Text style={s.note}>{t("paymentNote")}</Text>
 
-      <Text style={styles.note}>{t("paymentNote")}</Text>
-
-      <RazorpayWebView
-        visible={checkoutVisible}
-        order={order}
-        prefill={prefill}
-        onResult={handleResult}
-        onClose={closeCheckout}
-      />
-    </ScrollView>
+        <RazorpayWebView
+          visible={checkoutVisible}
+          order={order}
+          prefill={prefill}
+          onResult={handleResult}
+          onClose={closeCheckout}
+        />
+      </ScrollView>
+    </View>
   );
 }
 
-function OptionButton({ label, amount, active, onPress }) {
+function Radio({ s, colors, active, label, hint, onPress }) {
   return (
     <TouchableOpacity
-      style={[styles.option, active ? styles.optionActive : null]}
+      style={[s.radio, active ? s.radioActive : null]}
       onPress={onPress}
+      activeOpacity={0.8}
     >
-      <Text
-        style={[styles.optionLabel, active ? styles.optionLabelActive : null]}
-      >
-        {label}
-      </Text>
-      <Text
-        style={[styles.optionAmt, active ? styles.optionLabelActive : null]}
-      >
-        {amount}
-      </Text>
+      <Ionicons
+        name={active ? "radio-button-on" : "radio-button-off"}
+        size={22}
+        color={active ? colors.primary : colors.muted}
+      />
+      <View style={s.radioText}>
+        <Text style={s.radioLabel}>{label}</Text>
+        <Text style={s.radioHint}>{hint}</Text>
+      </View>
     </TouchableOpacity>
   );
 }
 
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: COLORS.bg },
-  content: { padding: 16 },
-  dueCard: {
-    backgroundColor: COLORS.gov,
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 20,
-  },
-  dueLabel: { color: "#cbd5e1", fontSize: 13 },
-  dueAmount: { color: "#fff", fontSize: 28, fontWeight: "bold", marginTop: 4 },
-  sectionLabel: {
-    fontSize: 13,
-    fontWeight: "bold",
-    color: COLORS.muted,
-    marginBottom: 8,
-  },
-  optionRow: { flexDirection: "row", gap: 12, marginBottom: 18 },
-  option: {
-    flex: 1,
-    backgroundColor: COLORS.card,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: 10,
-    padding: 14,
-  },
-  optionActive: { borderColor: COLORS.gov, backgroundColor: "#eef2ff" },
-  optionLabel: { fontSize: 13, color: COLORS.muted },
-  optionLabelActive: { color: COLORS.gov },
-  optionAmt: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: COLORS.text,
-    marginTop: 4,
-  },
-  label: { fontSize: 13, color: COLORS.text, marginBottom: 6 },
-  input: {
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: 8,
-    padding: 12,
-    backgroundColor: "#fff",
-    fontSize: 16,
-  },
-  button: {
-    backgroundColor: COLORS.india,
-    borderRadius: 8,
-    padding: 16,
-    alignItems: "center",
-    marginTop: 18,
-  },
-  buttonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
-  note: { fontSize: 12, color: COLORS.muted, marginTop: 16 },
-});
+function make(c) {
+  return StyleSheet.create({
+    screen: { flex: 1, backgroundColor: c.bg },
+    content: { padding: 16, paddingBottom: 40 },
+    dueCard: {
+      backgroundColor: c.primaryDark,
+      borderRadius: 16,
+      padding: 20,
+      marginBottom: 18,
+    },
+    dueLabel: { color: "#dbeafe", fontSize: 13 },
+    dueAmount: { color: "#fff", fontSize: 30, fontWeight: "800", marginTop: 4 },
+    section: {
+      fontSize: 13,
+      fontWeight: "700",
+      color: c.muted,
+      textTransform: "uppercase",
+      letterSpacing: 0.5,
+      marginBottom: 10,
+      marginTop: 8,
+    },
+    radio: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: c.card,
+      borderWidth: 1.5,
+      borderColor: c.border,
+      borderRadius: 14,
+      padding: 14,
+      marginBottom: 10,
+    },
+    radioActive: { borderColor: c.primary, backgroundColor: c.cardAlt },
+    radioText: { marginLeft: 12, flex: 1 },
+    radioLabel: { color: c.text, fontSize: 15, fontWeight: "600" },
+    radioHint: { color: c.muted, fontSize: 13, marginTop: 2 },
+    input: {
+      borderWidth: 1.5,
+      borderColor: c.primary,
+      borderRadius: 12,
+      padding: 14,
+      backgroundColor: c.card,
+      fontSize: 16,
+      color: c.text,
+      marginBottom: 8,
+    },
+    methodRow: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
+    },
+    method: {
+      width: "48%",
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: c.card,
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 12,
+      padding: 12,
+      marginBottom: 10,
+    },
+    methodText: { color: c.text, fontSize: 13, marginLeft: 10, fontWeight: "500" },
+    note: { fontSize: 12, color: c.muted, marginTop: 8, lineHeight: 17 },
+    payRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginTop: 14,
+      marginBottom: 6,
+    },
+    payLabel: { color: c.muted, fontSize: 14 },
+    payValue: { color: c.text, fontSize: 20, fontWeight: "800" },
+  });
+}
