@@ -4,12 +4,17 @@ import {
   Text,
   StyleSheet,
   FlatList,
+  TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  Alert,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../api/client";
-import { COLORS } from "../config";
+import { API_BASE_URL, COLORS } from "../config";
 
 const inr = (n) => "Rs. " + Number(n || 0).toLocaleString("en-IN");
 const fmtDate = (d) => (d ? new Date(d).toLocaleDateString("en-IN") : "-");
@@ -18,6 +23,7 @@ export default function ReceiptsScreen() {
   const [receipts, setReceipts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [downloadingId, setDownloadingId] = useState(null);
 
   const load = useCallback(async () => {
     try {
@@ -36,6 +42,39 @@ export default function ReceiptsScreen() {
       load();
     }, [load]),
   );
+
+  const downloadReceipt = async (item) => {
+    if (!item || !item._id) return;
+    setDownloadingId(item._id);
+    try {
+      const token = await AsyncStorage.getItem("gp_token");
+      const safeName =
+        String(item.receiptNumber || "receipt").replace(/[^a-zA-Z0-9]/g, "_") +
+        ".pdf";
+      const target = FileSystem.cacheDirectory + safeName;
+      const result = await FileSystem.downloadAsync(
+        API_BASE_URL + "/receipts/" + item._id + "/download",
+        target,
+        { headers: { Authorization: "Bearer " + token } },
+      );
+      if (result.status && result.status >= 400) {
+        throw new Error("Could not fetch receipt (" + result.status + ")");
+      }
+      const canShare = await Sharing.isAvailableAsync();
+      if (canShare) {
+        await Sharing.shareAsync(result.uri, {
+          mimeType: "application/pdf",
+          dialogTitle: "Receipt " + (item.receiptNumber || ""),
+        });
+      } else {
+        Alert.alert("Downloaded", "Receipt saved to: " + result.uri);
+      }
+    } catch (e) {
+      Alert.alert("Download failed", String(e.message || e));
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -60,6 +99,17 @@ export default function ReceiptsScreen() {
       {item.financialYear ? (
         <Text style={styles.muted}>Financial Year: {item.financialYear}</Text>
       ) : null}
+      <TouchableOpacity
+        style={styles.downloadBtn}
+        onPress={() => downloadReceipt(item)}
+        disabled={downloadingId === item._id}
+      >
+        {downloadingId === item._id ? (
+          <ActivityIndicator color={COLORS.gov} />
+        ) : (
+          <Text style={styles.downloadText}>Download Receipt (PDF)</Text>
+        )}
+      </TouchableOpacity>
     </View>
   );
 
@@ -79,14 +129,14 @@ export default function ReceiptsScreen() {
           emailed to you and appears here.
         </Text>
       }
-      contentContainerStyle={styles.content}
+      contentContainerStyle={styles.contentList}
     />
   );
 }
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: COLORS.bg },
-  content: { padding: 16 },
+  contentList: { padding: 16 },
   center: { flex: 1, alignItems: "center", justifyContent: "center" },
   header: {
     fontSize: 18,
@@ -106,5 +156,14 @@ const styles = StyleSheet.create({
   receiptNo: { fontWeight: "bold", color: COLORS.text },
   amount: { fontWeight: "bold", color: COLORS.india },
   muted: { color: COLORS.muted, marginTop: 4, fontSize: 13 },
+  downloadBtn: {
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: COLORS.gov,
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: "center",
+  },
+  downloadText: { color: COLORS.gov, fontWeight: "600" },
   empty: { color: COLORS.muted, textAlign: "center", marginTop: 40 },
 });

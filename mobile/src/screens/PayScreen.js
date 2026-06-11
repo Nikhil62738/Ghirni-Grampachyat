@@ -6,12 +6,13 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  ScrollView,
   ActivityIndicator,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import RazorpayCheckout from "react-native-razorpay";
 import api from "../api/client";
 import { COLORS } from "../config";
+import RazorpayWebView from "../components/RazorpayWebView";
 
 const inr = (n) => "Rs. " + Number(n || 0).toLocaleString("en-IN");
 
@@ -20,6 +21,8 @@ export default function PayScreen() {
   const [profile, setProfile] = useState({});
   const [amount, setAmount] = useState("");
   const [busy, setBusy] = useState(false);
+  const [order, setOrder] = useState(null);
+  const [checkoutVisible, setCheckoutVisible] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -29,7 +32,7 @@ export default function PayScreen() {
       setProfile(d.profile || {});
       setAmount(String(d.taxSummary?.totalDue || ""));
     } catch (e) {
-      // ignore
+      // ignore, keep previous values
     }
   }, []);
 
@@ -39,7 +42,7 @@ export default function PayScreen() {
     }, [load]),
   );
 
-  const pay = async () => {
+  const startPayment = async () => {
     const amt = Number(amount);
     if (!amt || amt <= 0) {
       Alert.alert("Invalid amount", "Enter an amount greater than zero.");
@@ -50,48 +53,59 @@ export default function PayScreen() {
       const orderRes = await api.post("/payments/online/order", {
         amount: amt,
       });
-      const order = orderRes.data.data;
-
-      const prefill = {
-        email: profile.email || "",
-        contact: profile.mobileNumber || "",
-        name: profile.fullName || "",
-      };
-      const options = {
-        description: "Property Tax Payment",
-        currency: order.currency || "INR",
-        key: order.keyId,
-        amount: order.amount,
-        order_id: order.orderId,
-        name: "Gram Panchayat Ghirni",
-        prefill,
-        theme: { color: COLORS.gov },
-      };
-
-      const result = await RazorpayCheckout.open(options);
-
-      await api.post("/payments/online/verify", {
-        razorpayOrderId: result.razorpay_order_id,
-        razorpayPaymentId: result.razorpay_payment_id,
-        razorpaySignature: result.razorpay_signature,
-      });
-
-      Alert.alert(
-        "Payment successful",
-        "Your payment is recorded. The digital receipt has been emailed to you.",
-      );
-      load();
+      setOrder(orderRes.data.data);
+      setCheckoutVisible(true);
     } catch (e) {
-      const msg =
-        e?.description || e?.message || "Payment was cancelled or failed.";
-      Alert.alert("Payment not completed", String(msg));
+      Alert.alert("Could not start payment", String(e.message || e));
     } finally {
       setBusy(false);
     }
   };
 
+  const closeCheckout = () => {
+    setCheckoutVisible(false);
+    setOrder(null);
+  };
+
+  const handleResult = async (payload) => {
+    if (!payload || payload.event !== "success") {
+      closeCheckout();
+      if (payload && payload.event === "failed") {
+        const msg =
+          payload.data?.description || "Payment failed. Please try again.";
+        Alert.alert("Payment not completed", String(msg));
+      }
+      return;
+    }
+    closeCheckout();
+    setBusy(true);
+    try {
+      const resp = payload.data || {};
+      await api.post("/payments/online/verify", {
+        razorpayOrderId: resp.razorpay_order_id,
+        razorpayPaymentId: resp.razorpay_payment_id,
+        razorpaySignature: resp.razorpay_signature,
+      });
+      Alert.alert(
+        "Payment successful",
+        "Your payment is recorded. The digital receipt has been emailed to you and is available in the Receipts tab.",
+      );
+      load();
+    } catch (e) {
+      Alert.alert("Verification failed", String(e.message || e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const prefill = {
+    name: profile.fullName || "",
+    email: profile.email || "",
+    contact: profile.mobileNumber || "",
+  };
+
   return (
-    <View style={styles.screen}>
+    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <View style={styles.dueCard}>
         <Text style={styles.dueLabel}>Outstanding Due</Text>
         <Text style={styles.dueAmount}>{inr(due)}</Text>
@@ -103,14 +117,33 @@ export default function PayScreen() {
         keyboardType="numeric"
         value={amount}
         onChangeText={setAmount}
-        placeholder="Enter amount"
+        placeholder="Enter any amount"
       />
+      <Text style={styles.hint}>
+        You can pay the full due or enter a custom amount.
+      </Text>
 
-      <TouchableOpacity style={styles.button} onPress={pay} disabled={busy}>
+      <View style={styles.quickRow}>
+        <QuickButton label="Full Due" onPress={() => setAmount(String(due))} />
+        <QuickButton
+          label="+500"
+          onPress={() => setAmount(String((Number(amount) || 0) + 500))}
+        />
+        <QuickButton
+          label="+1000"
+          onPress={() => setAmount(String((Number(amount) || 0) + 1000))}
+        />
+      </View>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={startPayment}
+        disabled={busy}
+      >
         {busy ? (
           <ActivityIndicator color="#fff" />
         ) : (
-          <Text style={styles.buttonText}>Pay Online</Text>
+          <Text style={styles.buttonText}>Pay Now with Razorpay</Text>
         )}
       </TouchableOpacity>
 
@@ -118,12 +151,29 @@ export default function PayScreen() {
         Payments are processed securely via Razorpay. A digital receipt with a
         QR code is emailed to you after a successful payment.
       </Text>
-    </View>
+
+      <RazorpayWebView
+        visible={checkoutVisible}
+        order={order}
+        prefill={prefill}
+        onResult={handleResult}
+        onClose={closeCheckout}
+      />
+    </ScrollView>
+  );
+}
+
+function QuickButton({ label, onPress }) {
+  return (
+    <TouchableOpacity style={styles.quickBtn} onPress={onPress}>
+      <Text style={styles.quickBtnText}>{label}</Text>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: COLORS.bg, padding: 16 },
+  screen: { flex: 1, backgroundColor: COLORS.bg },
+  content: { padding: 16 },
   dueCard: {
     backgroundColor: COLORS.gov,
     borderRadius: 12,
@@ -139,13 +189,25 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     backgroundColor: "#fff",
+    fontSize: 16,
   },
+  hint: { fontSize: 12, color: COLORS.muted, marginTop: 6 },
+  quickRow: { flexDirection: "row", gap: 10, marginTop: 12 },
+  quickBtn: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: COLORS.gov,
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: "center",
+  },
+  quickBtnText: { color: COLORS.gov, fontWeight: "600" },
   button: {
     backgroundColor: COLORS.india,
     borderRadius: 8,
-    padding: 14,
+    padding: 16,
     alignItems: "center",
-    marginTop: 16,
+    marginTop: 18,
   },
   buttonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
   note: { fontSize: 12, color: COLORS.muted, marginTop: 16 },

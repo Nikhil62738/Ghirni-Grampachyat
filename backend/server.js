@@ -27,6 +27,8 @@ async function bootstrap() {
     console.log(`\u2705 GP Ghirni Tax API running on port ${PORT} [${process.env.NODE_ENV || "development"}]`);
     // eslint-disable-next-line no-console
     console.log(`\u2709\uFE0F  Email mode: ${getEmailMode()}`);
+    // eslint-disable-next-line no-console
+    console.log(`\uD83D\uDD17 Receipt QR base URL (CLIENT_URL): ${process.env.CLIENT_URL || "http://localhost:5173 (NOT SET - QR codes will not work when scanned!)"}`);
     initCronJobs();
   });
 

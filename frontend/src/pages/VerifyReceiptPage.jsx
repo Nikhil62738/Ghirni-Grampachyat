@@ -38,7 +38,8 @@ export default function VerifyReceiptPage() {
           {data && (
             <div className="space-y-2 text-left">
               <div className="mb-3 rounded bg-green-50 px-3 py-2 text-center font-semibold text-green-700">
-                \u2714 {data.status}
+                {"\u2714 "}
+                {data.status}
               </div>
               <Row label="Receipt Number" value={data.receiptNumber} />
               <Row label="Taxpayer Name" value={data.taxpayerName} />
