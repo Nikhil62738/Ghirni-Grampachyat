@@ -1,0 +1,73 @@
+# Render Blueprint for the Gram Panchayat Ghirni backend API.
+# Deploy: push this repo to GitHub, then on Render click
+# "New +" -> "Blueprint" and select the repo. Render reads this file.
+#
+# Secret values (sync: false) are NOT stored here. Enter them in the
+# Render dashboard after the service is created.
+
+services:
+  - type: web
+    name: gp-ghirni-tax-api
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Render injects PORT automatically; the app reads process.env.PORT.
+
+      # MongoDB Atlas connection string (mongodb+srv://...). REQUIRED.
+      - key: MONGODB_URI
+        sync: false
+
+      # Comma-separated list of allowed frontend origins (your Netlify URL).
+      # e.g. https://your-site.netlify.app
+      - key: CLIENT_URL
+        sync: false
+
+      # Auth
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+
+      # Email (Gmail). Use EITHER GMAIL_APP_PASSWORD, OR the OAuth trio
+      # (CLIENT_ID + CLIENT_SECRET + REFRESH_TOKEN). GMAIL_EMAIL is always needed.
+      - key: GMAIL_EMAIL
+        sync: false
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+      - key: GMAIL_CLIENT_ID
+        sync: false
+      - key: GMAIL_CLIENT_SECRET
+        sync: false
+      - key: GMAIL_REFRESH_TOKEN
+        sync: false
+      - key: GMAIL_REDIRECT_URI
+        value: https://developers.google.com/oauthplayground
+
+      # Razorpay (online payments)
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+
+      # Cloudinary (file/image uploads)
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+      # Default super admin (auto-seeded on first boot)
+      - key: SEED_ADMIN_NAME
+        value: Super Admin
+      - key: SEED_ADMIN_EMAIL
+        value: admin@ghirni.gov.in
+      - key: SEED_ADMIN_PASSWORD
+        sync: false

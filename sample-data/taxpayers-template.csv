@@ -1,0 +1,4 @@
+Name,Father's Name,House Number,Property Number,Ward Number,Village,Mobile Number,Email,Address,Tax Amount,Property Type,Tax Category
+Ramesh Patil,Shankar Patil,H-101,P-2201,1,Ghirni,9876543210,ramesh.patil@example.com,Near Hanuman Mandir Ghirni,500,residential,general
+Sunita Deshmukh,Vitthal Deshmukh,H-102,P-2202,1,Ghirni,9876500011,sunita.d@example.com,Main Road Ghirni,1500,commercial,commercial
+Ganesh More,Kisan More,H-205,P-3310,2,Ghirni,9822012345,ganesh.more@example.com,Shivaji Nagar Ghirni,300,agricultural,general

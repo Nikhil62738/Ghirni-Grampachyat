@@ -1,0 +1,17 @@
+# Netlify build configuration for the Gram Panchayat Ghirni frontend (Vite + React).
+# In the Netlify UI, set "Base directory" to: frontend
+# (All paths below are then relative to the frontend/ folder.)
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Single Page App fallback: let React Router handle client-side routes
+# (e.g. /login, /admin, /portal) so a hard refresh does not 404.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
