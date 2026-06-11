@@ -10,27 +10,26 @@ import {
   ScrollView,
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
+import { useI18n } from "../context/I18nContext";
 import { COLORS } from "../config";
 
 export default function LoginScreen({ navigation }) {
   const { login } = useAuth();
+  const { t, lang, setLang } = useI18n();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
 
   const onSubmit = async () => {
     if (!identifier || !password) {
-      Alert.alert(
-        "Required",
-        "Enter your Email/Mobile/Taxpayer ID and password.",
-      );
+      Alert.alert(t("required"), t("enterIdAndPassword"));
       return;
     }
     setBusy(true);
     try {
       await login(identifier.trim(), password);
     } catch (e) {
-      Alert.alert("Login failed", e.message);
+      Alert.alert(t("loginFailed"), e.message);
     } finally {
       setBusy(false);
     }
@@ -39,29 +38,59 @@ export default function LoginScreen({ navigation }) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.tricolor} />
+
+      <View style={styles.langRow}>
+        <TouchableOpacity
+          style={[styles.langBtn, lang === "en" ? styles.langActive : null]}
+          onPress={() => setLang("en")}
+        >
+          <Text
+            style={[
+              styles.langText,
+              lang === "en" ? styles.langTextActive : null,
+            ]}
+          >
+            {t("english")}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.langBtn, lang === "mr" ? styles.langActive : null]}
+          onPress={() => setLang("mr")}
+        >
+          <Text
+            style={[
+              styles.langText,
+              lang === "mr" ? styles.langTextActive : null,
+            ]}
+          >
+            {t("marathi")}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.emblem}>
         <Text style={styles.emblemText}>GP</Text>
       </View>
-      <Text style={styles.govLine}>Government of Maharashtra</Text>
-      <Text style={styles.title}>Gram Panchayat Ghirni</Text>
-      <Text style={styles.subtitle}>Citizen Tax Services</Text>
+      <Text style={styles.govLine}>{t("govLine")}</Text>
+      <Text style={styles.title}>{t("appName")}</Text>
+      <Text style={styles.subtitle}>{t("citizenServices")}</Text>
 
       <View style={styles.card}>
-        <Text style={styles.label}>Email / Mobile / Taxpayer ID</Text>
+        <Text style={styles.label}>{t("idLabel")}</Text>
         <TextInput
           style={styles.input}
           autoCapitalize="none"
           value={identifier}
           onChangeText={setIdentifier}
-          placeholder="e.g. GPG-TP-000001"
+          placeholder={t("idPlaceholder")}
         />
-        <Text style={styles.label}>Password</Text>
+        <Text style={styles.label}>{t("password")}</Text>
         <TextInput
           style={styles.input}
           secureTextEntry
           value={password}
           onChangeText={setPassword}
-          placeholder="Your password"
+          placeholder={t("passwordPlaceholder")}
         />
         <TouchableOpacity
           style={styles.button}
@@ -71,7 +100,7 @@ export default function LoginScreen({ navigation }) {
           {busy ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.buttonText}>Login</Text>
+            <Text style={styles.buttonText}>{t("login")}</Text>
           )}
         </TouchableOpacity>
         <TouchableOpacity
@@ -79,15 +108,14 @@ export default function LoginScreen({ navigation }) {
           onPress={() => navigation.navigate("Activate")}
           disabled={busy}
         >
-          <Text style={styles.outlineButtonText}>Activate New Account</Text>
+          <Text style={styles.outlineButtonText}>
+            {t("activateNewAccount")}
+          </Text>
         </TouchableOpacity>
-        <Text style={styles.note}>
-          New taxpayer? Tap "Activate New Account" to verify your record and set
-          a password.
-        </Text>
+        <Text style={styles.note}>{t("newTaxpayerNote")}</Text>
       </View>
 
-      <Text style={styles.footer}>Tq. Malkapur, Dist. Buldhana - 443102</Text>
+      <Text style={styles.footer}>{t("footerAddress")}</Text>
     </ScrollView>
   );
 }
@@ -101,6 +129,18 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   tricolor: { height: 4, width: "100%", backgroundColor: COLORS.saffron },
+  langRow: { flexDirection: "row", gap: 10, marginTop: 16 },
+  langBtn: {
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    backgroundColor: "#fff",
+  },
+  langActive: { borderColor: COLORS.gov, backgroundColor: "#eef2ff" },
+  langText: { color: COLORS.text, fontSize: 13, fontWeight: "600" },
+  langTextActive: { color: COLORS.gov },
   emblem: {
     height: 64,
     width: 64,

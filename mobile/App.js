@@ -1,43 +1,85 @@
+import "react-native-gesture-handler";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { ActivityIndicator, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import { AuthProvider, useAuth } from "./src/context/AuthContext";
-import LoginScreen from "./src/screens/LoginScreen";
-import ActivateScreen from "./src/screens/ActivateScreen";
-import DashboardScreen from "./src/screens/DashboardScreen";
-import PayScreen from "./src/screens/PayScreen";
-import ReceiptsScreen from "./src/screens/ReceiptsScreen";
+import { I18nProvider, useI18n } from "./src/context/I18nContext";
+import { DashboardProvider } from "./src/context/DashboardContext";
 import { COLORS } from "./src/config";
 
+import LoginScreen from "./src/screens/LoginScreen";
+import ActivateScreen from "./src/screens/ActivateScreen";
+import HomeScreen from "./src/screens/HomeScreen";
+import TaxSummaryScreen from "./src/screens/TaxSummaryScreen";
+import TaxHistoryScreen from "./src/screens/TaxHistoryScreen";
+import PaymentHistoryScreen from "./src/screens/PaymentHistoryScreen";
+import PayScreen from "./src/screens/PayScreen";
+import CustomDrawer from "./src/components/CustomDrawer";
+
 const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
 
 const headerStyle = { backgroundColor: COLORS.gov };
 const headerTint = "#ffffff";
-const tabActive = COLORS.gov;
+const hiddenHeader = { headerShown: false };
 
-const loginScreenOptions = { headerShown: false };
-const activateScreenOptions = {
-  title: "Activate Account",
-  headerStyle,
+const drawerScreenOptions = {
+  headerStyle: headerStyle,
   headerTintColor: headerTint,
-};
-const tabBarOptions = {
-  headerStyle,
-  headerTintColor: headerTint,
-  tabBarActiveTintColor: tabActive,
+  drawerActiveTintColor: COLORS.gov,
+  drawerActiveBackgroundColor: "#eef2ff",
+  drawerInactiveTintColor: COLORS.text,
 };
 
-function MainTabs() {
+function AuthStack() {
   return (
-    <Tab.Navigator screenOptions={tabBarOptions}>
-      <Tab.Screen name="Dashboard" component={DashboardScreen} />
-      <Tab.Screen name="Pay Tax" component={PayScreen} />
-      <Tab.Screen name="Receipts" component={ReceiptsScreen} />
-    </Tab.Navigator>
+    <Stack.Navigator screenOptions={hiddenHeader}>
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Activate" component={ActivateScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function renderDrawer(props) {
+  return <CustomDrawer {...props} />;
+}
+
+function AppDrawer() {
+  const { t } = useI18n();
+
+  const homeOptions = { title: t("home"), headerTitle: t("appName") };
+  const taxSummaryOptions = { title: t("taxSummary") };
+  const taxHistoryOptions = { title: t("taxHistory") };
+  const paymentHistoryOptions = { title: t("paymentHistory") };
+  const payOptions = { title: t("payTax") };
+
+  return (
+    <Drawer.Navigator
+      drawerContent={renderDrawer}
+      screenOptions={drawerScreenOptions}
+    >
+      <Drawer.Screen name="Home" component={HomeScreen} options={homeOptions} />
+      <Drawer.Screen
+        name="TaxSummary"
+        component={TaxSummaryScreen}
+        options={taxSummaryOptions}
+      />
+      <Drawer.Screen
+        name="TaxHistory"
+        component={TaxHistoryScreen}
+        options={taxHistoryOptions}
+      />
+      <Drawer.Screen
+        name="PaymentHistory"
+        component={PaymentHistoryScreen}
+        options={paymentHistoryOptions}
+      />
+      <Drawer.Screen name="PayTax" component={PayScreen} options={payOptions} />
+    </Drawer.Navigator>
   );
 }
 
@@ -52,43 +94,33 @@ function Root() {
     );
   }
 
+  if (!user) {
+    return <AuthStack />;
+  }
+
   return (
-    <Stack.Navigator>
-      {user ? (
-        <Stack.Screen
-          name="Main"
-          component={MainTabs}
-          options={loginScreenOptions}
-        />
-      ) : (
-        <>
-          <Stack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={loginScreenOptions}
-          />
-          <Stack.Screen
-            name="Activate"
-            component={ActivateScreen}
-            options={activateScreenOptions}
-          />
-        </>
-      )}
-    </Stack.Navigator>
+    <DashboardProvider>
+      <AppDrawer />
+    </DashboardProvider>
   );
 }
 
 export default function App() {
   return (
-    <AuthProvider>
-      <NavigationContainer>
-        <StatusBar style="light" />
-        <Root />
-      </NavigationContainer>
-    </AuthProvider>
+    <GestureHandlerRootView style={styles.flex}>
+      <I18nProvider>
+        <AuthProvider>
+          <NavigationContainer>
+            <StatusBar style="light" />
+            <Root />
+          </NavigationContainer>
+        </AuthProvider>
+      </I18nProvider>
+    </GestureHandlerRootView>
   );
 }
 
-const styles = {
+const styles = StyleSheet.create({
+  flex: { flex: 1 },
   center: { flex: 1, alignItems: "center", justifyContent: "center" },
-};
+});

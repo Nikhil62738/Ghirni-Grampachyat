@@ -11,11 +11,13 @@ import {
 } from "react-native";
 import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
+import { useI18n } from "../context/I18nContext";
 import { COLORS } from "../config";
 
 // Steps: lookup -> confirm -> otp
 export default function ActivateScreen({ navigation }) {
   const { activate } = useAuth();
+  const { t } = useI18n();
   const [step, setStep] = useState("lookup");
   const [identifier, setIdentifier] = useState("");
   const [otp, setOtp] = useState("");
@@ -27,11 +29,11 @@ export default function ActivateScreen({ navigation }) {
   const msg = (e) =>
     (e && e.response && e.response.data && e.response.data.message) ||
     (e && e.message) ||
-    "Something went wrong. Please try again.";
+    t("somethingWrong");
 
   const lookup = async () => {
     if (!identifier) {
-      Alert.alert("Required", "Enter your Email / Mobile / Taxpayer ID.");
+      Alert.alert(t("required"), t("enterIdOnly"));
       return;
     }
     setBusy(true);
@@ -41,17 +43,14 @@ export default function ActivateScreen({ navigation }) {
       });
       const data = res.data.data;
       if (data.isActivated) {
-        Alert.alert(
-          "Already activated",
-          "This account is already active. Please log in instead.",
-        );
+        Alert.alert(t("alreadyActivated"), t("alreadyActivatedMsg"));
         navigation.navigate("Login");
         return;
       }
       setMaskedEmail(data.maskedEmail || "");
       setStep("confirm");
     } catch (e) {
-      Alert.alert("Not found", msg(e));
+      Alert.alert(t("notFound"), msg(e));
     } finally {
       setBusy(false);
     }
@@ -64,9 +63,9 @@ export default function ActivateScreen({ navigation }) {
         identifier: identifier.trim(),
       });
       setStep("otp");
-      Alert.alert("OTP sent", "An OTP has been sent to " + maskedEmail);
+      Alert.alert(t("otpSent"), t("otpSentTo") + maskedEmail);
     } catch (e) {
-      Alert.alert("Could not send OTP", msg(e));
+      Alert.alert(t("couldNotSendOtp"), msg(e));
     } finally {
       setBusy(false);
     }
@@ -74,15 +73,15 @@ export default function ActivateScreen({ navigation }) {
 
   const submit = async () => {
     if (!otp || !password) {
-      Alert.alert("Required", "Enter the OTP and a new password.");
+      Alert.alert(t("required"), t("enterOtpAndPassword"));
       return;
     }
     if (password.length < 6) {
-      Alert.alert("Weak password", "Password must be at least 6 characters.");
+      Alert.alert(t("weakPassword"), t("passwordMin6"));
       return;
     }
     if (password !== confirm) {
-      Alert.alert("Mismatch", "Passwords do not match.");
+      Alert.alert(t("mismatch"), t("passwordsNoMatch"));
       return;
     }
     setBusy(true);
@@ -90,7 +89,7 @@ export default function ActivateScreen({ navigation }) {
       await activate(identifier.trim(), otp.trim(), password);
       // On success the user is signed in and the navigator switches to the app.
     } catch (e) {
-      Alert.alert("Activation failed", msg(e));
+      Alert.alert(t("activationFailed"), msg(e));
     } finally {
       setBusy(false);
     }
@@ -99,19 +98,19 @@ export default function ActivateScreen({ navigation }) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.tricolor} />
-      <Text style={styles.title}>Activate Taxpayer Account</Text>
-      <Text style={styles.subtitle}>Gram Panchayat Ghirni</Text>
+      <Text style={styles.title}>{t("activateAccount")}</Text>
+      <Text style={styles.subtitle}>{t("appName")}</Text>
 
       <View style={styles.card}>
         {step === "lookup" && (
           <>
-            <Text style={styles.label}>Email / Mobile / Taxpayer ID</Text>
+            <Text style={styles.label}>{t("idLabel")}</Text>
             <TextInput
               style={styles.input}
               autoCapitalize="none"
               value={identifier}
               onChangeText={setIdentifier}
-              placeholder="e.g. GPG-TP-000001"
+              placeholder={t("idPlaceholder")}
             />
             <TouchableOpacity
               style={styles.button}
@@ -121,7 +120,7 @@ export default function ActivateScreen({ navigation }) {
               {busy ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text style={styles.buttonText}>Search Records</Text>
+                <Text style={styles.buttonText}>{t("searchRecords")}</Text>
               )}
             </TouchableOpacity>
           </>
@@ -130,8 +129,8 @@ export default function ActivateScreen({ navigation }) {
         {step === "confirm" && (
           <>
             <Text style={styles.info}>
-              Your taxpayer record was found. We will send a one-time password
-              (OTP) to your registered email {maskedEmail}.
+              {t("recordFoundInfo")}
+              {maskedEmail}.
             </Text>
             <TouchableOpacity
               style={styles.button}
@@ -141,7 +140,7 @@ export default function ActivateScreen({ navigation }) {
               {busy ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text style={styles.buttonText}>Send OTP</Text>
+                <Text style={styles.buttonText}>{t("sendOtp")}</Text>
               )}
             </TouchableOpacity>
           </>
@@ -149,29 +148,29 @@ export default function ActivateScreen({ navigation }) {
 
         {step === "otp" && (
           <>
-            <Text style={styles.label}>Enter OTP</Text>
+            <Text style={styles.label}>{t("enterOtp")}</Text>
             <TextInput
               style={styles.input}
               keyboardType="number-pad"
               value={otp}
               onChangeText={setOtp}
-              placeholder="6-digit code"
+              placeholder={t("otpPlaceholder")}
             />
-            <Text style={styles.label}>Create Password</Text>
+            <Text style={styles.label}>{t("createPassword")}</Text>
             <TextInput
               style={styles.input}
               secureTextEntry
               value={password}
               onChangeText={setPassword}
-              placeholder="At least 6 characters"
+              placeholder={t("atLeast6")}
             />
-            <Text style={styles.label}>Confirm Password</Text>
+            <Text style={styles.label}>{t("confirmPassword")}</Text>
             <TextInput
               style={styles.input}
               secureTextEntry
               value={confirm}
               onChangeText={setConfirm}
-              placeholder="Re-enter password"
+              placeholder={t("reEnterPassword")}
             />
             <TouchableOpacity
               style={styles.button}
@@ -181,18 +180,20 @@ export default function ActivateScreen({ navigation }) {
               {busy ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text style={styles.buttonText}>Verify & Create Account</Text>
+                <Text style={styles.buttonText}>
+                  {t("verifyCreateAccount")}
+                </Text>
               )}
             </TouchableOpacity>
             <TouchableOpacity onPress={requestOtp} disabled={busy}>
-              <Text style={styles.link}>Resend OTP</Text>
+              <Text style={styles.link}>{t("resendOtp")}</Text>
             </TouchableOpacity>
           </>
         )}
       </View>
 
       <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-        <Text style={styles.link}>Already activated? Log in</Text>
+        <Text style={styles.link}>{t("alreadyActivated")}</Text>
       </TouchableOpacity>
     </ScrollView>
   );

@@ -3,7 +3,6 @@
 // (e.g. http://192.168.1.5:5000/api) - localhost will NOT work on a phone.
 export const API_BASE_URL = "https://ghirni-grampachyat.onrender.com/api";
 
-
 export const COLORS = {
   gov: "#1e3a8a",
   govDark: "#172554",

@@ -11,13 +11,16 @@ import {
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import api from "../api/client";
+import { useI18n } from "../context/I18nContext";
 import { COLORS } from "../config";
 import RazorpayWebView from "../components/RazorpayWebView";
 
 const inr = (n) => "Rs. " + Number(n || 0).toLocaleString("en-IN");
 
 export default function PayScreen() {
+  const { t } = useI18n();
   const [due, setDue] = useState(0);
+  const [currentTax, setCurrentTax] = useState(0);
   const [profile, setProfile] = useState({});
   const [amount, setAmount] = useState("");
   const [busy, setBusy] = useState(false);
@@ -29,6 +32,7 @@ export default function PayScreen() {
       const res = await api.get("/taxpayers/me/dashboard");
       const d = res.data.data;
       setDue(d.taxSummary?.totalDue || 0);
+      setCurrentTax(d.taxSummary?.currentTax || 0);
       setProfile(d.profile || {});
       setAmount(String(d.taxSummary?.totalDue || ""));
     } catch (e) {
@@ -45,7 +49,7 @@ export default function PayScreen() {
   const startPayment = async () => {
     const amt = Number(amount);
     if (!amt || amt <= 0) {
-      Alert.alert("Invalid amount", "Enter an amount greater than zero.");
+      Alert.alert(t("invalidAmount"), t("enterAmountGtZero"));
       return;
     }
     setBusy(true);
@@ -56,7 +60,7 @@ export default function PayScreen() {
       setOrder(orderRes.data.data);
       setCheckoutVisible(true);
     } catch (e) {
-      Alert.alert("Could not start payment", String(e.message || e));
+      Alert.alert(t("couldNotStartPayment"), String(e.message || e));
     } finally {
       setBusy(false);
     }
@@ -71,9 +75,8 @@ export default function PayScreen() {
     if (!payload || payload.event !== "success") {
       closeCheckout();
       if (payload && payload.event === "failed") {
-        const msg =
-          payload.data?.description || "Payment failed. Please try again.";
-        Alert.alert("Payment not completed", String(msg));
+        const description = payload.data?.description || t("paymentFailedMsg");
+        Alert.alert(t("paymentNotCompleted"), String(description));
       }
       return;
     }
@@ -86,13 +89,10 @@ export default function PayScreen() {
         razorpayPaymentId: resp.razorpay_payment_id,
         razorpaySignature: resp.razorpay_signature,
       });
-      Alert.alert(
-        "Payment successful",
-        "Your payment is recorded. The digital receipt has been emailed to you and is available in the Receipts tab.",
-      );
+      Alert.alert(t("paymentSuccessful"), t("paymentSuccessMsg"));
       load();
     } catch (e) {
-      Alert.alert("Verification failed", String(e.message || e));
+      Alert.alert(t("verificationFailed"), String(e.message || e));
     } finally {
       setBusy(false);
     }
@@ -104,36 +104,41 @@ export default function PayScreen() {
     contact: profile.mobileNumber || "",
   };
 
+  const fullDueActive = Number(amount) === Number(due) && Number(due) > 0;
+  const currentTaxActive =
+    Number(amount) === Number(currentTax) && Number(currentTax) > 0;
+
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <View style={styles.dueCard}>
-        <Text style={styles.dueLabel}>Outstanding Due</Text>
+        <Text style={styles.dueLabel}>{t("outstandingDue")}</Text>
         <Text style={styles.dueAmount}>{inr(due)}</Text>
       </View>
 
-      <Text style={styles.label}>Amount to pay</Text>
+      <Text style={styles.sectionLabel}>{t("chooseWhatToPay")}</Text>
+      <View style={styles.optionRow}>
+        <OptionButton
+          label={t("fullDue")}
+          amount={inr(due)}
+          active={fullDueActive}
+          onPress={() => setAmount(String(due))}
+        />
+        <OptionButton
+          label={t("currentYearTax")}
+          amount={inr(currentTax)}
+          active={currentTaxActive}
+          onPress={() => setAmount(String(currentTax))}
+        />
+      </View>
+
+      <Text style={styles.label}>{t("orEnterCustomAmount")}</Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
         value={amount}
         onChangeText={setAmount}
-        placeholder="Enter any amount"
+        placeholder={t("enterAnyAmount")}
       />
-      <Text style={styles.hint}>
-        You can pay the full due or enter a custom amount.
-      </Text>
-
-      <View style={styles.quickRow}>
-        <QuickButton label="Full Due" onPress={() => setAmount(String(due))} />
-        <QuickButton
-          label="+500"
-          onPress={() => setAmount(String((Number(amount) || 0) + 500))}
-        />
-        <QuickButton
-          label="+1000"
-          onPress={() => setAmount(String((Number(amount) || 0) + 1000))}
-        />
-      </View>
 
       <TouchableOpacity
         style={styles.button}
@@ -143,14 +148,11 @@ export default function PayScreen() {
         {busy ? (
           <ActivityIndicator color="#fff" />
         ) : (
-          <Text style={styles.buttonText}>Pay Now with Razorpay</Text>
+          <Text style={styles.buttonText}>{t("payNowRazorpay")}</Text>
         )}
       </TouchableOpacity>
 
-      <Text style={styles.note}>
-        Payments are processed securely via Razorpay. A digital receipt with a
-        QR code is emailed to you after a successful payment.
-      </Text>
+      <Text style={styles.note}>{t("paymentNote")}</Text>
 
       <RazorpayWebView
         visible={checkoutVisible}
@@ -163,10 +165,22 @@ export default function PayScreen() {
   );
 }
 
-function QuickButton({ label, onPress }) {
+function OptionButton({ label, amount, active, onPress }) {
   return (
-    <TouchableOpacity style={styles.quickBtn} onPress={onPress}>
-      <Text style={styles.quickBtnText}>{label}</Text>
+    <TouchableOpacity
+      style={[styles.option, active ? styles.optionActive : null]}
+      onPress={onPress}
+    >
+      <Text
+        style={[styles.optionLabel, active ? styles.optionLabelActive : null]}
+      >
+        {label}
+      </Text>
+      <Text
+        style={[styles.optionAmt, active ? styles.optionLabelActive : null]}
+      >
+        {amount}
+      </Text>
     </TouchableOpacity>
   );
 }
@@ -182,6 +196,30 @@ const styles = StyleSheet.create({
   },
   dueLabel: { color: "#cbd5e1", fontSize: 13 },
   dueAmount: { color: "#fff", fontSize: 28, fontWeight: "bold", marginTop: 4 },
+  sectionLabel: {
+    fontSize: 13,
+    fontWeight: "bold",
+    color: COLORS.muted,
+    marginBottom: 8,
+  },
+  optionRow: { flexDirection: "row", gap: 12, marginBottom: 18 },
+  option: {
+    flex: 1,
+    backgroundColor: COLORS.card,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 10,
+    padding: 14,
+  },
+  optionActive: { borderColor: COLORS.gov, backgroundColor: "#eef2ff" },
+  optionLabel: { fontSize: 13, color: COLORS.muted },
+  optionLabelActive: { color: COLORS.gov },
+  optionAmt: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: COLORS.text,
+    marginTop: 4,
+  },
   label: { fontSize: 13, color: COLORS.text, marginBottom: 6 },
   input: {
     borderWidth: 1,
@@ -191,17 +229,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     fontSize: 16,
   },
-  hint: { fontSize: 12, color: COLORS.muted, marginTop: 6 },
-  quickRow: { flexDirection: "row", gap: 10, marginTop: 12 },
-  quickBtn: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: COLORS.gov,
-    borderRadius: 8,
-    paddingVertical: 10,
-    alignItems: "center",
-  },
-  quickBtnText: { color: COLORS.gov, fontWeight: "600" },
   button: {
     backgroundColor: COLORS.india,
     borderRadius: 8,

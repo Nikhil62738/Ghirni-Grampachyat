@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { WebView } from "react-native-webview";
+import { useI18n } from "../context/I18nContext";
 import { COLORS } from "../config";
 
 // Renders Razorpay Checkout inside a WebView. Unlike the native
@@ -13,6 +14,7 @@ export default function RazorpayWebView({
   onResult,
   onClose,
 }) {
+  const { t } = useI18n();
   const html = useMemo(
     () => buildCheckoutHtml(order, prefill),
     [order, prefill],
@@ -31,9 +33,9 @@ export default function RazorpayWebView({
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
       <View style={styles.bar}>
-        <Text style={styles.barTitle}>Secure Payment</Text>
+        <Text style={styles.barTitle}>{t("securePayment")}</Text>
         <TouchableOpacity onPress={onClose}>
-          <Text style={styles.cancel}>Cancel</Text>
+          <Text style={styles.cancel}>{t("cancel")}</Text>
         </TouchableOpacity>
       </View>
       {order ? (
