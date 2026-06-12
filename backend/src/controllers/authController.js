@@ -98,8 +98,10 @@ exports.taxpayerLookup = asyncHandler(async (req, res) => {
 
 // ===== Taxpayer: request activation OTP =====
 exports.requestOtp = asyncHandler(async (req, res) => {
-  const { identifier } = req.body;
-  const tp = await Taxpayer.findOne(taxpayerIdentifierFilter(identifier));
+  const { identifier, taxpayerId } = req.body;
+  const tp = await Taxpayer.findOne(
+    taxpayerIdentifierFilter(identifier || taxpayerId)
+  );
   if (!tp) return fail(res, "Taxpayer record not found", 404);
   if (!tp.email) return fail(res, "No email on file. Please contact the Gram Panchayat Office.", 400);
   if (!emailIsConfigured()) {
@@ -138,7 +140,14 @@ exports.requestOtp = asyncHandler(async (req, res) => {
     );
   }
 
-  return success(res, { sent: true }, "OTP sent to your registered email");
+  const sentTo = tp.email
+    ? tp.email.replace(/(.{2}).*(@.*)/, "$1***$2")
+    : null;
+  return success(
+    res,
+    { sent: true, sentTo },
+    "OTP sent to your registered email"
+  );
 });
 
 // ===== Taxpayer: verify OTP + set password (activation) =====

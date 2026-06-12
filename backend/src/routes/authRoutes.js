@@ -9,6 +9,7 @@ const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 30, standardHeade
 router.post("/admin/login", authLimiter, ctrl.adminLogin);
 router.post("/taxpayer/lookup", authLimiter, ctrl.taxpayerLookup);
 router.post("/taxpayer/request-otp", authLimiter, ctrl.requestOtp);
+router.post("/taxpayer/activate/start", authLimiter, ctrl.requestOtp);
 router.post("/taxpayer/activate", authLimiter, ctrl.verifyOtpAndActivate);
 router.post("/taxpayer/login", authLimiter, ctrl.taxpayerLogin);
 router.get("/me", authenticate, ctrl.me);
