@@ -5,7 +5,8 @@ export const translations = {
     appName: "Gram Panchayat Ghirni",
     govLine: "Government of Maharashtra",
     citizenServices: "Citizen Tax Services",
-    footerAddress: "Gram Panchayat Ghirni, Tq. Malkapur, Dist. Buldhana - 443102",
+    footerAddress:
+      "Gram Panchayat Ghirni, Tq. Malkapur, Dist. Buldhana - 443102",
     villageName: "Village Ghirni",
     welcomeMessage: "Pay your property tax online, quickly and securely.",
     language: "Language",
@@ -53,6 +54,8 @@ export const translations = {
     notice3: "Swachh Gram Abhiyan - keep your ward clean and green.",
     notifications: "Notifications",
     noNotifications: "No new notifications",
+    noNotificationsYet: "You have no notifications yet",
+    loadingFailed: "Could not load. Pull down to retry.",
 
     // Tax summary
     paymentProgress: "Payment Progress",
@@ -98,13 +101,16 @@ export const translations = {
     debitCard: "Debit Card",
     creditCard: "Credit Card",
     netBanking: "Net Banking",
-    paymentMethodsNote: "Choose your preferred method on the secure Razorpay screen.",
+    paymentMethodsNote:
+      "Choose your preferred method on the secure Razorpay screen.",
     proceedToSecurePayment: "Proceed to Secure Payment",
     payNowRazorpay: "Pay Now with Razorpay",
-    paymentNote: "Payments are processed securely via Razorpay. A digital receipt is generated automatically.",
+    paymentNote:
+      "Payments are processed securely via Razorpay. A digital receipt is generated automatically.",
     invalidAmount: "Invalid amount",
     enterAmountGtZero: "Please enter an amount greater than zero.",
-    customMaxDue: "Custom amount cannot be greater than the outstanding due. It must be equal to or less than the due amount.",
+    customMaxDue:
+      "Custom amount cannot be greater than the outstanding due. It must be equal to or less than the due amount.",
     couldNotStartPayment: "Could not start payment",
     securePayment: "Secure Payment",
     cancel: "Cancel",
@@ -146,7 +152,8 @@ export const translations = {
     darkMode: "Dark",
     systemMode: "System",
     comingSoon: "This feature is coming soon.",
-    contactInfo: "Office: Gram Panchayat Ghirni, Tq. Malkapur, Dist. Buldhana - 443102",
+    contactInfo:
+      "Office: Gram Panchayat Ghirni, Tq. Malkapur, Dist. Buldhana - 443102",
 
     // Auth
     login: "Login",
@@ -158,7 +165,8 @@ export const translations = {
     password: "Password",
     passwordPlaceholder: "Enter your password",
     activateNewAccount: "Activate New Account",
-    newTaxpayerNote: "New taxpayer? Activate your account with the OTP sent to your registered email.",
+    newTaxpayerNote:
+      "New taxpayer? Activate your account with the OTP sent to your registered email.",
     activateAccount: "Activate Account",
     searchRecords: "Search Records",
     sendOtp: "Send OTP",
@@ -288,10 +296,12 @@ export const translations = {
     paymentMethodsNote: "सुरक्षित Razorpay स्क्रीनवर आपली पसंतीची पद्धत निवडा.",
     proceedToSecurePayment: "सुरक्षित भरण्याकडे जा",
     payNowRazorpay: "Razorpay ने आता भरा",
-    paymentNote: "भरण��� Razorpay मार्फत सुरक्षितपणे केला जातो. डिजिटल पावती आपोआप तयार होते.",
+    paymentNote:
+      "भरण��� Razorpay मार्फत सुरक्षितपणे केला जातो. डिजिटल पावती आपोआप तयार होते.",
     invalidAmount: "अवैध रक्कम",
     enterAmountGtZero: "कृपया शून्यापेक्षा जास्त रक्कम टाका.",
-    customMaxDue: "सानुकूल रक्कम थकबाकीपेक्षा जास्त असू शकत नाही. ती थकबाकीइतकी किंवा त्यापेक्षा कमी असावी.",
+    customMaxDue:
+      "सानुकूल रक्कम थकबाकीपेक्षा जास्त असू शकत नाही. ती थकबाकीइतकी किंवा त्यापेक्षा कमी असावी.",
     couldNotStartPayment: "भरणा सुरू करता आला नाही",
     securePayment: "सुरक्षित भरणा",
     cancel: "रद्द करा",
@@ -333,7 +343,8 @@ export const translations = {
     darkMode: "गडद",
     systemMode: "प्रणाली",
     comingSoon: "हे वैशिष्ट्य लवकरच येत आहे.",
-    contactInfo: "कार्यालय: ग्राम पंचायत घिरणी, ता. मलकापूर, जि. बुलढाणा - ४४३१०२",
+    contactInfo:
+      "कार्यालय: ग्राम पंचायत घिरणी, ता. मलकापूर, जि. बुलढाणा - ४४३१०२",
 
     // Auth
     login: "लॉगिन",
@@ -345,7 +356,8 @@ export const translations = {
     password: "पासवर्ड",
     passwordPlaceholder: "आपला पासवर्ड टाका",
     activateNewAccount: "नवीन खाते सक्रिय करा",
-    newTaxpayerNote: "नवीन करदाता? नोंदणीकृत ईमेलवर पाठवलेल्या OTP ने आपले खाते सक्रिय करा.",
+    newTaxpayerNote:
+      "नवीन करदाता? नोंदणीकृत ईमेलवर पाठवलेल्या OTP ने आपले खाते सक्रिय करा.",
     activateAccount: "खाते सक्रिय करा",
     searchRecords: "नोंदी शोधा",
     sendOtp: "OTP पाठवा",

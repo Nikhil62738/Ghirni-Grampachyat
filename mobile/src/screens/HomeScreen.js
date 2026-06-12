@@ -39,7 +39,7 @@ function statusTone(tax) {
 
 export default function HomeScreen({ navigation }) {
   const { data, loading, reload } = useDashboard();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { colors } = useTheme();
   const s = useMemo(() => make(colors), [colors]);
 
@@ -53,7 +53,7 @@ export default function HomeScreen({ navigation }) {
         ? t("statusOverdue")
         : t("statusPending");
 
-  const onBell = () => Alert.alert(t("notifications"), t("noNotifications"));
+  const onBell = () => navigation.navigate("Notifications");
   const contactOffice = () =>
     Alert.alert(t("qaContactOffice"), t("contactInfo"), [
       { text: "OK" },
@@ -63,11 +63,25 @@ export default function HomeScreen({ navigation }) {
       },
     ]);
 
-  const notices = [t("notice1"), t("notice2"), t("notice3")];
+  // Admin-managed announcements (bilingual). Falls back to the default
+  // static notices only when the office has not published any yet.
+  const annList = (data?.announcements || []).map((a) => {
+    const title = lang === "mr" && a.titleMr ? a.titleMr : a.title;
+    const body = lang === "mr" && a.bodyMr ? a.bodyMr : a.body;
+    return body ? title + " \u2014 " + body : title;
+  });
+  const notices = annList.length
+    ? annList
+    : [t("notice1"), t("notice2"), t("notice3")];
 
   return (
     <View style={s.screen}>
-      <AppHeader title={t("appName")} subtitle={t("govLine")} onBell={onBell} />
+      <AppHeader
+        title={t("appName")}
+        subtitle={t("govLine")}
+        onBell={onBell}
+        badge={data?.unreadCount || 0}
+      />
       <ScrollView
         contentContainerStyle={s.content}
         refreshControl={

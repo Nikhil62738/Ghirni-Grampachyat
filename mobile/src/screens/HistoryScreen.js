@@ -40,7 +40,7 @@ export default function HistoryScreen({ route }) {
       <AppHeader
         title={t("history")}
         subtitle={t("appName")}
-        onBell={() => Alert.alert(t("notifications"), t("noNotifications"))}
+        onBell={() => navigation.navigate("Notifications")}
       />
       <View style={s.segment}>
         <TouchableOpacity

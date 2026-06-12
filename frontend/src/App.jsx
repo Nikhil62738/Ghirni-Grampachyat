@@ -15,6 +15,7 @@ import Payments from "./pages/admin/Payments.jsx";
 import OfflineCollection from "./pages/admin/OfflineCollection.jsx";
 import Receipts from "./pages/admin/Receipts.jsx";
 import Notifications from "./pages/admin/Notifications.jsx";
+import Announcements from "./pages/admin/Announcements.jsx";
 import Reports from "./pages/admin/Reports.jsx";
 import Analytics from "./pages/admin/Analytics.jsx";
 import AdminManagement from "./pages/admin/AdminManagement.jsx";
@@ -76,6 +77,7 @@ export default function App() {
         <Route path="offline-collection" element={<OfflineCollection />} />
         <Route path="receipts" element={<Receipts />} />
         <Route path="notifications" element={<Notifications />} />
+        <Route path="announcements" element={<Announcements />} />
         <Route path="reports" element={<Reports />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="admins" element={<AdminManagement />} />

@@ -21,6 +21,11 @@ const MENU = [
     key: "notifications",
     perm: "manage_notifications",
   },
+  {
+    to: "/admin/announcements",
+    key: "announcements",
+    perm: "manage_notifications",
+  },
   { to: "/admin/reports", key: "reports", perm: "manage_reports" },
   { to: "/admin/analytics", key: "analytics", perm: "manage_analytics" },
   { to: "/admin/admins", key: "adminManagement", perm: "manage_admins" },

@@ -25,6 +25,7 @@ import HistoryScreen from "./src/screens/HistoryScreen";
 import ProfileScreen from "./src/screens/ProfileScreen";
 import TaxSummaryScreen from "./src/screens/TaxSummaryScreen";
 import ReceiptScreen from "./src/screens/ReceiptScreen";
+import NotificationsScreen from "./src/screens/NotificationsScreen";
 
 const Stack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -132,6 +133,12 @@ function AppNavigator() {
     headerStyle,
     headerTintColor: "#fff",
   };
+  const notificationsOptions = {
+    headerShown: true,
+    title: t("notifications"),
+    headerStyle,
+    headerTintColor: "#fff",
+  };
   const tabsOptions = { headerShown: false };
 
   return (
@@ -152,6 +159,11 @@ function AppNavigator() {
             name="Receipt"
             component={ReceiptScreen}
             options={receiptOptions}
+          />
+          <Stack.Screen
+            name="Notifications"
+            component={NotificationsScreen}
+            options={notificationsOptions}
           />
         </Stack.Navigator>
       ) : (

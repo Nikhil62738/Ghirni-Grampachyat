@@ -58,7 +58,7 @@ export default function ProfileScreen() {
       <AppHeader
         title={t("profile")}
         subtitle={t("appName")}
-        onBell={() => Alert.alert(t("notifications"), t("noNotifications"))}
+        onBell={() => navigation.navigate("Notifications")}
       />
       <ScrollView contentContainerStyle={s.content}>
         <View style={s.avatarWrap}>

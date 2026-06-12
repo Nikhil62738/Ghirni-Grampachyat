@@ -69,7 +69,9 @@ export default function PayScreen({ navigation }) {
     }
     setBusy(true);
     try {
-      const orderRes = await api.post("/payments/online/order", { amount: amt });
+      const orderRes = await api.post("/payments/online/order", {
+        amount: amt,
+      });
       setOrder(orderRes.data.data);
       setCheckoutVisible(true);
     } catch (e) {
@@ -129,7 +131,7 @@ export default function PayScreen({ navigation }) {
       <AppHeader
         title={t("payTax")}
         subtitle={t("appName")}
-        onBell={() => Alert.alert(t("notifications"), t("noNotifications"))}
+        onBell={() => navigation.navigate("Notifications")}
       />
       <ScrollView contentContainerStyle={s.content}>
         <View style={s.dueCard}>
@@ -290,7 +292,12 @@ function make(c) {
       padding: 12,
       marginBottom: 10,
     },
-    methodText: { color: c.text, fontSize: 13, marginLeft: 10, fontWeight: "500" },
+    methodText: {
+      color: c.text,
+      fontSize: 13,
+      marginLeft: 10,
+      fontWeight: "500",
+    },
     note: { fontSize: 12, color: c.muted, marginTop: 8, lineHeight: 17 },
     payRow: {
       flexDirection: "row",

@@ -9,6 +9,10 @@ const { excelUpload } = require("../middleware/upload");
 // Taxpayer self dashboard
 router.get("/me/dashboard", authenticate, requireRole(ROLES.TAXPAYER), ctrl.myDashboard);
 
+// Taxpayer self: in-app notifications (mirrors the emails they receive)
+router.get("/me/notifications", authenticate, requireRole(ROLES.TAXPAYER), ctrl.myNotifications);
+router.post("/me/notifications/read", authenticate, requireRole(ROLES.TAXPAYER), ctrl.markNotificationsRead);
+
 // Admin-managed taxpayer routes
 router.use(authenticate, requireRole(ROLES.ADMIN));
 const canManage = requirePermission(PERMISSIONS.MANAGE_TAXPAYERS);

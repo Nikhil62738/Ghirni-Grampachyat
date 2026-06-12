@@ -19,7 +19,7 @@ function loadRazorpayScript() {
 
 export default function TaxpayerDashboard() {
   const { logout } = useAuth();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -117,6 +117,7 @@ export default function TaxpayerDashboard() {
 
   const profile = data?.profile || {};
   const summary = data?.taxSummary || {};
+  const announcements = data?.announcements || [];
   const history = data?.taxHistory || [];
   const payments = data?.payments || [];
   const receipts = data?.receipts || [];
@@ -143,6 +144,29 @@ export default function TaxpayerDashboard() {
       <div className="mx-auto max-w-5xl space-y-5 px-4 py-6">
         <Alert type="error">{error}</Alert>
         <Alert type="success">{msg}</Alert>
+
+        {announcements.length > 0 && (
+          <section className="card">
+            <h2 className="mb-3 text-lg font-bold">{t("noticesTitle")}</h2>
+            <div className="space-y-2">
+              {announcements.map((a) => {
+                const title = lang === "mr" && a.titleMr ? a.titleMr : a.title;
+                const body = lang === "mr" && a.bodyMr ? a.bodyMr : a.body;
+                return (
+                  <div key={a._id} className="gov-notice">
+                    <div className="font-semibold">
+                      {a.pinned ? "\u2605 " : ""}
+                      {title}
+                    </div>
+                    {body ? (
+                      <div className="mt-1 whitespace-pre-line">{body}</div>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         <section className="card">
           <h2 className="mb-3 text-lg font-bold">{t("profile")}</h2>

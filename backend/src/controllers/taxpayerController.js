@@ -2,6 +2,7 @@ const Taxpayer = require("../models/Taxpayer");
 const Payment = require("../models/Payment");
 const Receipt = require("../models/Receipt");
 const Notification = require("../models/Notification");
+const Announcement = require("../models/Announcement");
 const Otp = require("../models/Otp");
 const asyncHandler = require("../utils/asyncHandler");
 const { success, created, fail, ApiError } = require("../utils/apiResponse");
@@ -111,9 +112,11 @@ exports.myDashboard = asyncHandler(async (req, res) => {
   const tp = await Taxpayer.findById(req.user._id);
   if (!tp) return fail(res, "Record not found", 404);
 
-  const [payments, receipts] = await Promise.all([
+  const [payments, receipts, announcements, unreadCount] = await Promise.all([
     Payment.find({ taxpayer: tp._id, status: "paid" }).sort({ createdAt: -1 }).limit(50),
     Receipt.find({ taxpayer: tp._id }).sort({ createdAt: -1 }).limit(50),
+    Announcement.find({ active: true }).sort({ pinned: -1, createdAt: -1 }).limit(10),
+    Notification.countDocuments({ taxpayer: tp._id, read: { $ne: true } }),
   ]);
 
   return success(res, {
@@ -142,5 +145,28 @@ exports.myDashboard = asyncHandler(async (req, res) => {
     taxHistory: tp.taxHistory,
     payments,
     receipts,
+    announcements,
+    unreadCount,
   });
+});
+
+// ===== Taxpayer self: in-app notifications =====
+exports.myNotifications = asyncHandler(async (req, res) => {
+  if (req.userRole !== ROLES.TAXPAYER) throw new ApiError("Taxpayer access only", 403);
+  const [items, unread] = await Promise.all([
+    Notification.find({ taxpayer: req.user._id }).sort({ createdAt: -1 }).limit(50),
+    Notification.countDocuments({ taxpayer: req.user._id, read: { $ne: true } }),
+  ]);
+  return success(res, { items, unread });
+});
+
+// ===== Taxpayer self: mark notifications as read =====
+exports.markNotificationsRead = asyncHandler(async (req, res) => {
+  if (req.userRole !== ROLES.TAXPAYER) throw new ApiError("Taxpayer access only", 403);
+  const { ids } = req.body || {};
+  const filter = { taxpayer: req.user._id };
+  if (Array.isArray(ids) && ids.length) filter._id = { $in: ids };
+  await Notification.updateMany(filter, { $set: { read: true, readAt: new Date() } });
+  const unread = await Notification.countDocuments({ taxpayer: req.user._id, read: { $ne: true } });
+  return success(res, { unread }, "Notifications marked as read");
 });

@@ -11,6 +11,9 @@ const notificationSchema = new mongoose.Schema(
     message: { type: String },
     status: { type: String, enum: ["sent", "failed", "pending"], default: "pending" },
     error: { type: String },
+    // In-app read state for the taxpayer-facing notification bell.
+    read: { type: Boolean, default: false },
+    readAt: { type: Date },
   },
   { timestamps: true }
 );

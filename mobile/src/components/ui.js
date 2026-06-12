@@ -14,8 +14,7 @@ import { RADIUS } from "../config";
 
 const logo = require("../../assets/logo.png");
 
-export const inr = (n) =>
-  "\u20B9 " + Number(n || 0).toLocaleString("en-IN");
+export const inr = (n) => "\u20B9 " + Number(n || 0).toLocaleString("en-IN");
 export const fmtDate = (d) =>
   d ? new Date(d).toLocaleDateString("en-IN") : "-";
 
@@ -213,7 +212,23 @@ export function Skeleton({ height, width, style }) {
   return <View style={[s.skeleton, dim, style]} />;
 }
 
-export function AppHeader({ title, subtitle, onBell }) {
+const headerBadge = StyleSheet.create({
+  dot: {
+    position: "absolute",
+    top: 2,
+    right: 2,
+    minWidth: 16,
+    height: 16,
+    borderRadius: 8,
+    paddingHorizontal: 3,
+    backgroundColor: "#DC2626",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  txt: { color: "#fff", fontSize: 9, fontWeight: "800" },
+});
+
+export function AppHeader({ title, subtitle, onBell, badge = 0 }) {
   const s = useStyles();
   const { lang, setLang } = useI18n();
   const enActive = lang === "en";
@@ -237,6 +252,13 @@ export function AppHeader({ title, subtitle, onBell }) {
         </View>
         <TouchableOpacity style={s.iconBtn} onPress={onBell}>
           <Ionicons name="notifications-outline" size={22} color="#fff" />
+          {badge > 0 ? (
+            <View style={headerBadge.dot}>
+              <Text style={headerBadge.txt}>
+                {badge > 9 ? "9+" : String(badge)}
+              </Text>
+            </View>
+          ) : null}
         </TouchableOpacity>
         <TouchableOpacity
           style={s.langPill}
