@@ -23,6 +23,9 @@ function generateYearlyTax(taxpayer, settings, now = new Date()) {
   taxpayer.previousBalance = carriedForward;
   taxpayer.penalty = (taxpayer.penalty || 0) + penaltyOnCarry;
   taxpayer.currentTax = newTax;
+  // New cycle: the carried-forward balance is already net of prior payments, so
+  // reset paidAmount. Otherwise (gross - paidAmount) would subtract old payments twice.
+  taxpayer.paidAmount = 0;
   taxpayer.totalDue = carriedForward + penaltyOnCarry + newTax;
 
   const dueDate = new Date(now.getFullYear(), (settings.dueMonth || 5) - 1, settings.dueDay || 31);
@@ -48,7 +51,10 @@ function generateYearlyTax(taxpayer, settings, now = new Date()) {
 function applyPayment(taxpayer, amount, now = new Date()) {
   const fy = currentFinancialYear(now);
   taxpayer.paidAmount = (taxpayer.paidAmount || 0) + amount;
-  taxpayer.totalDue = Math.max(0, (taxpayer.totalDue || 0) - amount);
+  // Derive totalDue from gross - paidAmount so it stays consistent with
+  // recomputeDue(); an admin edit can then never wipe out this payment.
+  const gross = (taxpayer.currentTax || 0) + (taxpayer.previousBalance || 0) + (taxpayer.penalty || 0);
+  taxpayer.totalDue = Math.max(0, gross - taxpayer.paidAmount);
   taxpayer.lastPaymentDate = now;
 
   taxpayer.taxHistory = taxpayer.taxHistory || [];

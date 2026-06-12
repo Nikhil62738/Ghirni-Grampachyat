@@ -14,7 +14,7 @@ import api from "../api/client";
 import { useI18n } from "../context/I18nContext";
 import { useTheme } from "../context/ThemeContext";
 import { useDashboard } from "../context/DashboardContext";
-import RazorpayWebView from "../components/RazorpayWebView";
+import RazorpayCheckout from "react-native-razorpay";
 import { AppHeader, PrimaryButton, inr } from "../components/ui";
 
 export default function PayScreen({ navigation }) {
@@ -29,8 +29,6 @@ export default function PayScreen({ navigation }) {
   const [choice, setChoice] = useState("full"); // full | current | custom
   const [custom, setCustom] = useState("");
   const [busy, setBusy] = useState(false);
-  const [order, setOrder] = useState(null);
-  const [checkoutVisible, setCheckoutVisible] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -57,6 +55,23 @@ export default function PayScreen({ navigation }) {
         ? Number(currentTax)
         : Number(custom);
 
+  const verifyPayment = async (resp, paidAmount) => {
+    setBusy(true);
+    try {
+      await api.post("/payments/online/verify", {
+        razorpayOrderId: resp.razorpay_order_id,
+        razorpayPaymentId: resp.razorpay_payment_id,
+        razorpaySignature: resp.razorpay_signature,
+      });
+      await reload();
+      navigation.navigate("Receipt", { amount: Number(paidAmount) });
+    } catch (e) {
+      Alert.alert(t("verificationFailed"), String(e.message || e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const startPayment = async () => {
     const amt = Number(amount);
     if (!amt || amt <= 0) {
@@ -68,63 +83,43 @@ export default function PayScreen({ navigation }) {
       return;
     }
     setBusy(true);
+    let orderData;
     try {
       const orderRes = await api.post("/payments/online/order", {
         amount: amt,
       });
-      setOrder(orderRes.data.data);
-      setCheckoutVisible(true);
+      orderData = orderRes.data.data;
     } catch (e) {
-      Alert.alert(t("couldNotStartPayment"), String(e.message || e));
-    } finally {
       setBusy(false);
-    }
-  };
-
-  const closeCheckout = () => {
-    setCheckoutVisible(false);
-    setOrder(null);
-  };
-
-  const handleResult = async (payload) => {
-    if (!payload || payload.event !== "success") {
-      closeCheckout();
-      if (payload && payload.event === "failed") {
-        const description = payload.data?.description || t("paymentFailedMsg");
-        Alert.alert(t("paymentNotCompleted"), String(description));
-      }
+      Alert.alert(t("couldNotStartPayment"), String(e.message || e));
       return;
     }
-    closeCheckout();
-    setBusy(true);
-    try {
-      const resp = payload.data || {};
-      await api.post("/payments/online/verify", {
-        razorpayOrderId: resp.razorpay_order_id,
-        razorpayPaymentId: resp.razorpay_payment_id,
-        razorpaySignature: resp.razorpay_signature,
+    setBusy(false);
+
+    const options = {
+      key: orderData.keyId,
+      order_id: orderData.orderId,
+      amount: orderData.amount,
+      currency: orderData.currency || "INR",
+      name: t("appName"),
+      description: t("payTax"),
+      prefill: {
+        name: profile.fullName || "",
+        email: profile.email || "",
+        contact: profile.mobileNumber || "",
+      },
+      theme: { color: colors.primary },
+    };
+
+    RazorpayCheckout.open(options)
+      .then((data) => verifyPayment(data, amt))
+      .catch((err) => {
+        if (err && Number(err.code) === 0) return; // user dismissed the sheet
+        const description =
+          err?.description || err?.error?.description || t("paymentFailedMsg");
+        Alert.alert(t("paymentNotCompleted"), String(description));
       });
-      await reload();
-      navigation.navigate("Receipt", { amount: Number(amount) });
-    } catch (e) {
-      Alert.alert(t("verificationFailed"), String(e.message || e));
-    } finally {
-      setBusy(false);
-    }
   };
-
-  const prefill = {
-    name: profile.fullName || "",
-    email: profile.email || "",
-    contact: profile.mobileNumber || "",
-  };
-
-  const methods = [
-    { icon: "phone-portrait-outline", label: t("upi") },
-    { icon: "card-outline", label: t("debitCard") },
-    { icon: "card", label: t("creditCard") },
-    { icon: "business-outline", label: t("netBanking") },
-  ];
 
   return (
     <View style={s.screen}>
@@ -175,17 +170,6 @@ export default function PayScreen({ navigation }) {
           />
         ) : null}
 
-        <Text style={s.section}>{t("paymentMethods")}</Text>
-        <View style={s.methodRow}>
-          {methods.map((m, i) => (
-            <View key={i} style={s.method}>
-              <Ionicons name={m.icon} size={20} color={colors.primary} />
-              <Text style={s.methodText}>{m.label}</Text>
-            </View>
-          ))}
-        </View>
-        <Text style={s.note}>{t("paymentMethodsNote")}</Text>
-
         <View style={s.payRow}>
           <Text style={s.payLabel}>{t("amountToPay")}</Text>
           <Text style={s.payValue}>{inr(amount)}</Text>
@@ -198,14 +182,6 @@ export default function PayScreen({ navigation }) {
           onPress={startPayment}
         />
         <Text style={s.note}>{t("paymentNote")}</Text>
-
-        <RazorpayWebView
-          visible={checkoutVisible}
-          order={order}
-          prefill={prefill}
-          onResult={handleResult}
-          onClose={closeCheckout}
-        />
       </ScrollView>
     </View>
   );

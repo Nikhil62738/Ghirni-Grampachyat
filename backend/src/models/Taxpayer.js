@@ -73,7 +73,10 @@ taxpayerSchema.methods.comparePassword = function comparePassword(candidate) {
 // Recompute total due from components.
 taxpayerSchema.methods.recomputeDue = function recomputeDue() {
   const gross = (this.currentTax || 0) + (this.previousBalance || 0) + (this.penalty || 0);
-  this.totalDue = Math.max(0, gross - 0);
+  // totalDue is the NET outstanding amount: gross liabilities minus everything
+  // already paid this cycle. Subtracting paidAmount keeps editing a taxpayer
+  // from silently erasing recorded payments.
+  this.totalDue = Math.max(0, gross - (this.paidAmount || 0));
   return this.totalDue;
 };
 
